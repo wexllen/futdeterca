@@ -3,7 +3,7 @@
 MVP local-first para administrar uma pelada com 3 times de 6 jogadores (5 linha + goleiro).
 
 ## Regras implementadas
-- 3 times: Azul, Verde e Vermelho.
+- 3 times: Azul, Vermelho e Amarelo.
 - Um time defende a quadra, um desafia e um espera.
 - Cada partida dura 7 minutos ou termina quando um time chega a 2 gols.
 - O defensor precisa vencer. Se o tempo terminar empatado, o desafiante permanece.
@@ -53,3 +53,7 @@ Na aba **Times**, cada um dos três times agora permite definir o **nome da cor*
 ## V0.5
 
 O conceito de Overall/OVR foi removido completamente desta versão.
+
+## V0.6.2 — cores padrão
+- Times padrão: Azul, Vermelho e Amarelo.
+- Migração automática corrige o antigo terceiro time Vermelho duplicado para Amarelo.
