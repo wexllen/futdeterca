@@ -8,6 +8,7 @@ type Player={id:string;name:string;gk:boolean;games:number;wins:number;goals:num
 type Team={color:Color;name:string;hex:string;players:Player[]};
 type Match={id:string;defender:Color;challenger:Color;waiting:Color;sd:number;sc:number;startedAt:number|null;endsAt:number|null;remaining:number;status:'ready'|'running'|'paused'|'penalties'|'finished';winner?:Color;reason?:string;events:{at:number;type:string;team?:Color;player?:string}[]};
 type AppState={version:number;teams:Record<Color,Team>;current:Match;history:Match[]};
+type TeamStats={games:number;wins:number;losses:number};
 const COLORS:Color[]=['azul','verde','vermelho'];
 const LABEL:Record<Color,string>={azul:'Azul',verde:'Vermelho',vermelho:'Amarelo'};
 const DEFAULT_HEX:Record<Color,string>={azul:'#2368d8',verde:'#d8443d',vermelho:'#f4d03f'};
@@ -19,6 +20,7 @@ const load=():AppState=>{try{const x=localStorage.getItem('terca-fc:state');retu
 const fmt=(s:number)=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
 const fmtNow=(d:Date)=>{const weekday=new Intl.DateTimeFormat('pt-BR',{weekday:'long'}).format(d).replace('-feira','').toUpperCase();const date=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);const time=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(d);return `${weekday} • ${date} • ${time}`};
 const teamStyle=(t:Team)=>({'--team':t.hex} as React.CSSProperties);
+const teamStats=(history:Match[],color:Color):TeamStats=>{const games=history.filter(m=>m.defender===color||m.challenger===color);const wins=games.filter(m=>m.winner===color).length;return {games:games.length,wins,losses:games.length-wins}};
 const textColor=(hex:string)=>{const h=hex.replace('#','');if(h.length!==6)return '#fff';const [r,g,b]=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16));return (r*299+g*587+b*114)/1000>155?'#111':'#fff'};
 
 function App(){
@@ -33,15 +35,16 @@ function App(){
  const next=()=>setState(s=>{const m=s.current;if(!m.winner)return s; const loser=m.winner===m.defender?m.challenger:m.defender; return {...s,current:newMatch(m.winner,m.waiting,loser)}});
  const resetCurrent=()=>setState(s=>({...s,current:newMatch(s.current.defender,s.current.challenger,s.current.waiting)}));
  const team=(c:Color)=>state.teams[c];
+ const stats=(c:Color)=>teamStats(state.history,c);
  return <div className="app"><header><div><div className="eyebrow">{fmtNow(now)}</div><h1>CEFAS</h1></div><div className="live"><span/>LOCAL FIRST</div></header>
  <main>{tab==='quadra'&&<section className="court">
    <div className="match-meta"><span>{state.current.status==='finished'?'PARTIDA ENCERRADA':'QUADRA'}</span><span>7 MIN · 2 GOLS</span></div>
-   <div className="scoreboard"><TeamSide team={team(state.current.defender)} role="DEFENDE" score={state.current.sd}/><div className="clock"><b>{state.current.sd} <i>×</i> {state.current.sc}</b><strong>{fmt(state.current.remaining)}</strong><small>{state.current.status==='running'?'EM JOGO':state.current.status==='paused'?'PAUSADO':state.current.status==='penalties'?'PÊNALTIS':state.current.status==='finished'?'FIM':'PRONTO'}</small></div><TeamSide team={team(state.current.challenger)} role="DESAFIA" score={state.current.sc}/></div>
+   <div className="scoreboard"><TeamSide team={team(state.current.defender)} role="DEFENDE" stats={stats(state.current.defender)}/><div className="clock"><b>{state.current.sd} <i>×</i> {state.current.sc}</b><strong>{fmt(state.current.remaining)}</strong><small>{state.current.status==='running'?'EM JOGO':state.current.status==='paused'?'PAUSADO':state.current.status==='penalties'?'PÊNALTIS':state.current.status==='finished'?'FIM':'PRONTO'}</small></div><TeamSide team={team(state.current.challenger)} role="DESAFIA" stats={stats(state.current.challenger)}/></div>
    <div className="rule">{state.history.length===0?<>Empate no 1º jogo vai para pênaltis</>:<>{team(state.current.defender).name} precisa vencer <span>•</span> empate mantém {team(state.current.challenger).name}</>}</div>
    {state.current.status==='penalties'?<div className="penalties"><Trophy/><div><small>DISPUTA DE PÊNALTIS</small><h2>Quem venceu?</h2><p>Não é necessário registrar as cobranças.</p></div><div className="penalty-actions"><button className="goal" style={{...teamStyle(team(state.current.defender)),color:textColor(team(state.current.defender).hex)}} onClick={()=>choosePenaltyWinner(state.current.defender)}>{team(state.current.defender).name}</button><button className="goal" style={{...teamStyle(team(state.current.challenger)),color:textColor(team(state.current.challenger).hex)}} onClick={()=>choosePenaltyWinner(state.current.challenger)}>{team(state.current.challenger).name}</button></div></div>:state.current.status!=='finished'?<><div className="goal-row"><button className="goal" style={{...teamStyle(team(state.current.defender)),color:textColor(team(state.current.defender).hex)}} onClick={()=>goal('d')}><Plus/> Gol {team(state.current.defender).name}</button><button className="goal" style={{...teamStyle(team(state.current.challenger)),color:textColor(team(state.current.challenger).hex)}} onClick={()=>goal('c')}><Plus/> Gol {team(state.current.challenger).name}</button></div><div className="controls"><button onClick={startPause}>{state.current.status==='running'?<Pause/>:<Play/>}{state.current.status==='running'?'Pausar':'Iniciar'}</button><button onClick={resetCurrent}><RotateCcw/>Reiniciar</button></div></>:<div className="result"><Trophy/><div><small>PERMANECE NA QUADRA</small><h2>{team(state.current.winner!).name}</h2><p>{state.current.reason==='tempo'?'Tempo encerrado':state.current.reason==='penaltis'?'Vitória nos pênaltis':'Dois gols'} · {state.current.sd} × {state.current.sc}</p></div><button onClick={next}>Próxima partida →</button></div>}
    <div className="waiting" style={teamStyle(team(state.current.waiting))}><div><small>PRÓXIMO</small><strong>{team(state.current.waiting).name}</strong></div></div>
  </section>}
- {tab==='times'&&<section><div className="section-title"><div><div className="eyebrow">ELENCOS DA NOITE</div><h2>3 times · 6 jogadores</h2></div></div><InitialMatchSelector state={state} setState={setState}/><div className="teams-grid">{COLORS.map(c=><TeamEditor key={c} team={team(c)} onChange={t=>setState(s=>({...s,teams:{...s.teams,[c]:t}}))}/>)}</div></section>}
+ {tab==='times'&&<section><div className="section-title"><div><div className="eyebrow">ELENCOS DA NOITE</div><h2>3 times · 6 jogadores</h2></div></div><InitialMatchSelector state={state} setState={setState}/><div className="teams-grid">{COLORS.map(c=><TeamEditor key={c} team={team(c)} stats={stats(c)} onChange={t=>setState(s=>({...s,teams:{...s.teams,[c]:t}}))}/>)}</div></section>}
  {tab==='historico'&&<section><div className="section-title"><div className="eyebrow">SÚMULA</div><h2>Histórico da terça</h2></div><div className="history">{state.history.length===0?<div className="empty">Nenhuma partida encerrada ainda.</div>:state.history.map((m,i)=><div className="history-item" key={m.id}><b>#{state.history.length-i}</b><span className="dot" style={teamStyle(team(m.defender))}/><strong>{team(m.defender).name} {m.sd}</strong><em>×</em><strong>{m.sc} {team(m.challenger).name}</strong><span className="winner">fica {team(m.winner!).name}</span></div>)}</div></section>}
  {tab==='ajustes'&&<SettingsPanel state={state} setState={setState}/>}</main>
  <nav>{[['quadra',TimerReset,'Quadra'],['times',Users,'Times'],['historico',History,'Histórico'],['ajustes',Settings,'Ajustes']].map(([id,Icon,label]:any)=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}><Icon/>{label}</button>)}</nav></div>
@@ -62,11 +65,11 @@ function InitialMatchSelector({state,setState}:{state:AppState;setState:React.Di
  </div>
 }
 
-function TeamSide({team,role}:{team:Team;role:string;score:number}){return <div className="team-side"><div className="shirt" style={teamStyle(team)}/><small>{role}</small><h2>{team.name}</h2></div>}
-function TeamEditor({team,onChange}:{team:Team;onChange:(t:Team)=>void}){
+function TeamSide({team,role,stats}:{team:Team;role:string;stats:TeamStats}){return <div className="team-side"><div className="shirt" style={teamStyle(team)}/><small>{role}</small><h2>{team.name}</h2><div className="team-record"><b>{stats.wins}V</b><span>{stats.losses}D</span></div></div>}
+function TeamEditor({team,stats,onChange}:{team:Team;stats:TeamStats;onChange:(t:Team)=>void}){
  const update=(i:number,k:keyof Player,v:any)=>{const ps=team.players.map((p,x)=>x===i?{...p,[k]:v}:p);onChange({...team,players:ps})};
  return <div className="team-card" style={teamStyle(team)}>
-   <div className="team-card-head"><div><small>TIME / COLETE</small><h3>{team.name}</h3></div></div>
+   <div className="team-card-head"><div><small>TIME / COLETE</small><h3>{team.name}</h3></div><div className="result-counter"><span><b>{stats.wins}</b> vitórias</span><span><b>{stats.losses}</b> derrotas</span><small>{stats.games} jogos</small></div></div>
    <div className="kit-editor">
      <label className="color-picker"><input type="color" value={team.hex} onChange={e=>onChange({...team,hex:e.target.value})}/><span style={{background:team.hex}}/></label>
      <div><small>NOME DA COR</small><input className="kit-name" value={team.name} maxLength={18} onChange={e=>onChange({...team,name:e.target.value||LABEL[team.color]})}/></div>

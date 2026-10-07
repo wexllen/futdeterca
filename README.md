@@ -57,3 +57,18 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 ## V0.6.2 — cores padrão
 - Times padrão: Azul, Vermelho e Amarelo.
 - Migração automática corrige o antigo terceiro time Vermelho duplicado para Amarelo.
+
+### V0.6.3 - escolher quais dois times iniciam jogando
+
+- É possível escolher quais dois times iniciam jogando.
+
+## V0.6.4 - Adiciona contador de resultados dos times
+
+- Histórico das partidas encerradas.
+- Contador de resultados por time:
+  - Vitórias;
+  - Derrotas;
+  - Jogos.
+- Não existe empate no resultado competitivo:
+  - empate após 7 minutos conta como vitória do desafiante;
+  - no primeiro jogo, empate conta como vitória de quem vencer nos pênaltis.
