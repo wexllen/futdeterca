@@ -76,3 +76,8 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 ## V0.6.5 - Altera label para nome do time
 
 - Altera a label "COR DO TIME" para "NOME DO TIME"
+
+## V0.6.6 - Centraliza resultados no historico
+
+- Os nomes ficam simétricos em torno do placar, o × fica realmente no centro e cada time ganhou seu indicador de cor.
+  - Também adaptei o layout para celular, para não ficar espremido.
