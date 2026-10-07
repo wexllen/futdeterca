@@ -72,3 +72,7 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 - Não existe empate no resultado competitivo:
   - empate após 7 minutos conta como vitória do desafiante;
   - no primeiro jogo, empate conta como vitória de quem vencer nos pênaltis.
+
+## V0.6.5 - Altera label para nome do time
+
+- Altera a label "COR DO TIME" para "NOME DO TIME"
