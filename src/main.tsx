@@ -72,7 +72,7 @@ function TeamEditor({team,stats,onChange}:{team:Team;stats:TeamStats;onChange:(t
    <div className="team-card-head"><div><small>TIME / COLETE</small><h3>{team.name}</h3></div><div className="result-counter"><span><b>{stats.wins}</b> vitórias</span><span><b>{stats.losses}</b> derrotas</span><small>{stats.games} jogos</small></div></div>
    <div className="kit-editor">
      <label className="color-picker"><input type="color" value={team.hex} onChange={e=>onChange({...team,hex:e.target.value})}/><span style={{background:team.hex}}/></label>
-     <div><small>NOME DO TIME</small><input className="kit-name" value={team.name} maxLength={18} onChange={e=>onChange({...team,name:e.target.value||LABEL[team.color]})}/></div>
+     <div><small>NOME DO TIME</small><input className="kit-name" value={team.name} maxLength={18} onChange={e=>onChange({...team,name:e.target.value})} onBlur={e=>{if(!e.target.value.trim())onChange({...team,name:LABEL[team.color]})}}/></div>
      <code>{team.hex.toUpperCase()}</code>
    </div>
    {team.players.map((p,i)=><div className="player" key={p.id}><span>{p.gk?'GK':String(i).padStart(2,'0')}</span><input value={p.name} onChange={e=>update(i,'name',e.target.value)}/></div>)}

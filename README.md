@@ -81,3 +81,8 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 
 - Os nomes ficam simétricos em torno do placar, o × fica realmente no centro e cada time ganhou seu indicador de cor.
   - Também adaptei o layout para celular, para não ficar espremido.
+
+## V0.6.7 - Corrige edicao do nome dos times
+
+- O campo está sendo “normalizado” cedo demais: quando o valor vira vazio, o código repõe imediatamente o nome anterior.
+- Agora o campo NOME DO TIME pode ficar vazio enquanto você apaga e digita outro nome. O valor padrão só volta se você sair do campo deixando-o realmente vazio.
