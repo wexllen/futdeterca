@@ -68,10 +68,18 @@ const minTimestamp=(matches:LegacyMatch[])=>{
   return values.length?Math.min(...values):null;
 };
 
-const maxTimestamp=(match:LegacyMatch)=>{
-  const values=(match.events??[])
+const matchTimestamps=(match:LegacyMatch)=>
+  (match.events??[])
     .map(eventTimestamp)
     .filter((value):value is number=>value!==null);
+
+const minMatchTimestamp=(match:LegacyMatch)=>{
+  const values=matchTimestamps(match);
+  return values.length?Math.min(...values):null;
+};
+
+const maxTimestamp=(match:LegacyMatch)=>{
+  const values=matchTimestamps(match);
   return values.length?Math.max(...values):null;
 };
 
@@ -101,7 +109,7 @@ const mapMatch=(legacy:LegacyMatch,finished:boolean):Match=>{
     sc:Number(legacy.sc??0),
     startedAt:typeof legacy.startedAt==='number'
       ?legacy.startedAt
-      :null,
+      :minMatchTimestamp(legacy),
     endsAt:typeof legacy.endsAt==='number'
       ?legacy.endsAt
       :null,
