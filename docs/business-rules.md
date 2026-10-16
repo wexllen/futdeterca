@@ -129,6 +129,14 @@ Deve existir no máximo uma sessão ativa.
 
 Encerrar uma terça arquiva a sessão. Iniciar outra não apaga as anteriores. O histórico pode ser consultado por sessão.
 
+Uma nova terça começa como uma nova composição operacional:
+- não herda as cores dos coletes da sessão anterior;
+- não herda os jogadores da sessão anterior;
+- usa os coletes padrão Azul, Vermelho e Amarelo;
+- usa os jogadores placeholder/default até que a composição daquela sessão seja editada.
+
+As sessões encerradas preservam integralmente seus próprios coletes e jogadores históricos.
+
 ## Eventos individuais — planejado
 
 O evento de gol deve poder evoluir para conter, opcionalmente:
