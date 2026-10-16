@@ -92,3 +92,4 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 - Cores rápidas: Branco, Preto, Vermelho, Laranja, Amarelo, Azul e Verde.
 - A opção **Outra cor** mantém o seletor livre e gera automaticamente um rótulo simples para a cor escolhida.
 - O formato do estado V7 é preservado para manter compatibilidade com backups existentes; o campo interno `name` passa a ser derivado da cor do colete.
+- Resumo J/V/D/G no Histórico, derivado automaticamente das partidas encerradas.
