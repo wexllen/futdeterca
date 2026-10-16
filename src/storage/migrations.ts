@@ -1,6 +1,6 @@
-import {kitNameFromHex} from '../domain/kits';
-import {defaultTeams,localDateKey} from '../domain/session';
-import type {AppState,Match,MatchEvent,Session,Team,TeamId} from '../domain/types';
+import {kitNameFromHex} from '../domain/kits.ts';
+import {defaultTeams,localDateKey} from '../domain/session.ts';
+import type {AppState,Match,MatchEvent,Session,Team,TeamId} from '../domain/types.ts';
 
 export type LegacyTeamId='azul'|'verde'|'vermelho';
 
