@@ -1,8 +1,6 @@
 # Arquitetura — CEFAS
 
-## Estado real da main
-
-A `main` atual está na linha V0.6.8.
+## V0.7.0
 
 Stack:
 - React
@@ -14,70 +12,46 @@ Stack:
 - GitHub Pages
 - `localStorage`
 
-Persistência atual:
+Persistência:
 - chave: `terca-fc:state`
-- schema: V7
+- schema atual: V8
+- leitura compatível com backup V7
 
-Modelo atual, simplificado:
+## Modelo V8
 
 ```text
 AppState
-├── version
-├── teams
-├── current
-└── history
+├── version: 8
+├── activeSessionId
+└── sessions[]
+    └── Session
+        ├── id
+        ├── date
+        ├── startedAt
+        ├── finishedAt
+        ├── status
+        ├── teams
+        ├── current
+        └── history[]
 ```
 
-A interface e a coordenação de estado ainda estão concentradas em `src/main.tsx`, mas a primeira extração de domínio já foi iniciada.
+Os IDs técnicos de time são neutros:
 
-Extraído para `src/domain/`:
-- tipos;
-- resolução de resultado competitivo;
-- rotação;
-- estatísticas derivadas.
+```text
+team-1
+team-2
+team-3
+```
 
-Ainda permanecem em `src/main.tsx`:
-- estado React;
-- timer;
-- persistência;
-- migração/normalização;
-- import/export;
-- componentes.
+A cor do colete é atributo da sessão e não identidade técnica.
 
-O workflow atual executa:
-- `npm ci`
-- `npm run build`
-- deploy para GitHub Pages
-
-Há testes de caracterização configurados com o test runner nativo do Node. O CI executa testes, typecheck e build em pull requests.
-
-## Dívidas conhecidas
-
-### IDs legados
-Os identificadores internos ainda são:
-- `azul`
-- `verde`
-- `vermelho`
-
-Hoje eles funcionam como IDs técnicos legados e podem divergir da cor exibida.
-
-### Campo name legado
-O schema V7 ainda contém `name`, embora a interface V0.6.8 derive o rótulo a partir da cor do colete.
-
-### Timer
-A implementação V0.6.8 ainda finaliza automaticamente quando o cronômetro chega a zero. A regra de negócio validada em campo exige encerramento explícito pelo operador após interrupção natural.
-
-### Timestamps históricos
-A V0.6.8 zera alguns timestamps ao finalizar/pausar, limitando análises históricas de duração.
-
-## Direção arquitetural 0.7+
-
-A evolução deve ser incremental para:
+## Camadas atuais
 
 ```text
 src/
 ├── domain/
 │   ├── types.ts
+│   ├── kits.ts
 │   ├── match.ts
 │   ├── rotation.ts
 │   ├── session.ts
@@ -85,78 +59,91 @@ src/
 ├── storage/
 │   ├── state.ts
 │   └── migrations.ts
-├── hooks/
-│   └── useMatchTimer.ts
-├── components/
-├── App.tsx
-└── main.tsx
+├── main.tsx
+└── styles.css
 ```
 
 ### Domain
-Funções puras de regras do CEFAS. Não devem depender de React, DOM ou `localStorage`.
-
-### Application/UI
-Coordena estado e interação. React apresenta o domínio; não deve ser a fonte das regras.
+Regras puras do CEFAS:
+- IDs e tipos;
+- coletes;
+- resultado competitivo;
+- expiração do relógio;
+- rotação;
+- sessões;
+- estatísticas.
 
 ### Storage
 Responsável por:
-- carregar;
-- salvar;
-- exportar;
-- importar;
-- validar;
-- migrar.
+- carregar/salvar V8;
+- validar backups;
+- migrar V7 para V8;
+- manter a mesma chave de `localStorage`.
 
-O domínio não deve conhecer `localStorage`.
+### UI
+`main.tsx` ainda concentra componentes e coordenação React. A extração de componentes/hook de timer fica para V0.7.x.
 
-## Schema futuro
+## Migração V7 → V8
 
-0.7.0 deve introduzir uma entidade `Session` e um novo schema versionado, preservando migração a partir do V7.
-
-Modelo conceitual:
+Mapeamento técnico:
 
 ```text
-AppState
-└── sessions[]
-    └── Session
-        ├── id
-        ├── date
-        ├── startedAt
-        ├── finishedAt?
-        ├── status
-        ├── teams/coletes snapshot
-        ├── current
-        └── matches[]
+azul      -> team-1
+verde     -> team-2
+vermelho  -> team-3
 ```
 
-Cada sessão deve guardar snapshot dos coletes para que alterar uma terça futura não reescreva visualmente o passado.
+Os hex dos coletes são preservados, portanto o backup real Laranja/Branco/Preto continua visualmente igual.
 
-## Testes
+A migração:
+- cria uma Session;
+- considera a sessão migrada ativa, pois o V7 não registrava formalmente o encerramento da terça;
+- infere a data pela menor marca temporal de eventos;
+- reconstrói `startedAt` e `finishedAt` de partidas a partir dos eventos quando possível;
+- preserva histórico, placares, vencedores, motivos e eventos.
 
-Prioridade imediata antes/durante 0.7:
-- resultado por 2 gols;
-- empate da primeira partida -> pênaltis;
-- empate posterior -> desafiante;
+## Tempo
+
+`00:00` agora significa estado `expired`.
+
+```text
+running
+  ↓
+00:00
+  ↓
+expired
+  ↓
+operador aguarda interrupção natural
+  ↓
+Encerrar por tempo
+```
+
+O relógio não decide sozinho o fim físico da jogada.
+
+## Testes / CI
+
+O test runner nativo do Node cobre:
+- regras de resultado;
 - rotação;
-- estatísticas derivadas;
-- Session ativa/encerrada;
-- migração V7 -> próximo schema.
+- estatísticas;
+- estado `expired`;
+- gol após 00:00;
+- migração do backup V7 real;
+- IDs neutros;
+- preservação de 12 partidas / 27 gols;
+- ciclo encerrar sessão → iniciar outra.
 
-O backup real da primeira terça deve ser usado como fixture de regressão:
-- 12 partidas preservadas;
-- 27 gols preservados;
-- vencedores e placares preservados;
-- estatísticas derivadas preservadas.
+O CI executa:
+- `npm ci`
+- `npm test`
+- `npm run typecheck`
+- `npm run build`
 
-## Quality gate desejado
+## Próxima consolidação
 
-```text
-npm ci
-  -> lint
-  -> typecheck
-  -> test
-  -> build
-  -> deploy
-```
-
-Não adicionar ferramentas apenas por aparência de maturidade; cada etapa deve proteger um risco real do projeto.
+V0.7.x:
+- extrair componentes;
+- extrair hook do timer;
+- reduzir `main.tsx`;
+- revisar lint/format;
+- amadurecer storage/migrations conforme novos schemas surgirem.
