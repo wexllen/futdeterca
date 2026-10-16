@@ -1,5 +1,5 @@
-import {migrateV7,isLegacyV7} from './migrations';
-import type {AppState,Match,Session,TeamId} from '../domain/types';
+import {migrateV7,isLegacyV7} from './migrations.ts';
+import type {AppState,Match,Session,TeamId} from '../domain/types.ts';
 
 export const STORAGE_KEY='terca-fc:state';
 
