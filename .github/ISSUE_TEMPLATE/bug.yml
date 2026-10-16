@@ -1,0 +1,29 @@
+name: Bug
+description: Regressão ou comportamento incorreto observado
+title: "[Bug] "
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: Comportamento observado
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Como reproduzir
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidências
+      description: Prints, backup JSON, logs, navegador/dispositivo ou contexto da terça.
