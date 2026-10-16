@@ -1,4 +1,4 @@
-export type Color='azul'|'verde'|'vermelho';
+export type TeamId='team-1'|'team-2'|'team-3';
 
 export type Player={
   id:string;
@@ -10,42 +10,54 @@ export type Player={
 };
 
 export type Team={
-  color:Color;
-  name:string;
+  id:TeamId;
   hex:string;
   players:Player[];
 };
 
-export type MatchStatus='ready'|'running'|'paused'|'penalties'|'finished';
+export type MatchStatus='ready'|'running'|'paused'|'expired'|'penalties'|'finished';
 
 export type MatchEvent={
   at:number;
   type:string;
-  team?:Color;
+  team?:TeamId;
   player?:string;
 };
 
 export type Match={
   id:string;
-  defender:Color;
-  challenger:Color;
-  waiting:Color;
+  defender:TeamId;
+  challenger:TeamId;
+  waiting:TeamId;
   sd:number;
   sc:number;
   startedAt:number|null;
   endsAt:number|null;
+  finishedAt:number|null;
   remaining:number;
   status:MatchStatus;
-  winner?:Color;
+  winner?:TeamId;
   reason?:string;
   events:MatchEvent[];
 };
 
-export type AppState={
-  version:number;
-  teams:Record<Color,Team>;
+export type SessionStatus='active'|'finished';
+
+export type Session={
+  id:string;
+  date:string;
+  startedAt:number;
+  finishedAt:number|null;
+  status:SessionStatus;
+  teams:Record<TeamId,Team>;
   current:Match;
   history:Match[];
+};
+
+export type AppState={
+  version:8;
+  activeSessionId:string|null;
+  sessions:Session[];
 };
 
 export type TeamStats={

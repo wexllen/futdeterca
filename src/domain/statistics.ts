@@ -1,12 +1,12 @@
-import type {Color,Match,TeamStats} from './types';
+import type {Match,TeamId,TeamStats} from './types.ts';
 
-export const teamStats=(history:Match[],color:Color):TeamStats=>{
+export const teamStats=(history:Match[],team:TeamId):TeamStats=>{
   const games=history.filter(
-    match=>match.defender===color||match.challenger===color,
+    match=>match.defender===team||match.challenger===team,
   );
-  const wins=games.filter(match=>match.winner===color).length;
+  const wins=games.filter(match=>match.winner===team).length;
   const goals=games.reduce(
-    (total,match)=>total+(match.defender===color?match.sd:match.sc),
+    (total,match)=>total+(match.defender===team?match.sd:match.sc),
     0,
   );
 

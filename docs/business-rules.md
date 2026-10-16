@@ -34,7 +34,7 @@ Portanto:
 00:00 != fim automático da jogada
 ```
 
-A branch `main` V0.6.8 ainda encerra automaticamente ao atingir zero; isso é uma divergência conhecida para ser corrigida na evolução 0.7.0.
+Na V0.7.0, `00:00` coloca a partida em estado de tempo esgotado. O operador encerra por tempo após a interrupção natural.
 
 ## Regra de permanência
 
@@ -116,7 +116,7 @@ Na prática:
 
 Esses empréstimos são participações temporárias e não devem mudar permanentemente a identidade do jogador.
 
-## Sessões/Terças — planejado para 0.7.0
+## Sessões/Terças — V0.7.0
 
 Cada terça deve ser uma sessão com:
 - início;
@@ -127,7 +127,7 @@ Cada terça deve ser uma sessão com:
 
 Deve existir no máximo uma sessão ativa.
 
-Encerrar uma terça arquiva a sessão. Iniciar outra não deve apagar as anteriores.
+Encerrar uma terça arquiva a sessão. Iniciar outra não apaga as anteriores. O histórico pode ser consultado por sessão.
 
 ## Eventos individuais — planejado
 

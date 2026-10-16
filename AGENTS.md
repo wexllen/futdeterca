@@ -12,7 +12,7 @@ Antes de alterar regras de negócio, leia:
 
 ## Estado atual
 
-A branch `main` está na linha V0.6.8. O schema persistido atual é V7 e usa `localStorage` na chave `terca-fc:state`.
+A linha V0.7 usa schema V8 com `Session[]` e mantém leitura de backups V7. A persistência usa `localStorage` na chave `terca-fc:state`.
 
 Stack atual:
 - React
@@ -46,7 +46,7 @@ A suíte de caracterização usa o test runner nativo do Node. Antes de abrir PR
 6. Metadados opcionais nunca devem impedir registrar rapidamente um evento essencial, como um gol.
 7. Não adicionar backend, autenticação, sincronização, ranking, OVR ou outras camadas sem requisito validado.
 8. Evitar reescritas amplas. Preferir refatoração incremental com comportamento preservado.
-9. Tratar o backup real da primeira terça como futuro fixture de regressão para migrações V7+.
+9. Tratar o backup real da primeira terça como fixture obrigatória de regressão para migrações V7+.
 10. O comportamento canônico de tempo é o descrito em `docs/business-rules.md`, mesmo que a implementação atual ainda divirja em algum ponto.
 
 ## Fluxo de mudança recomendado
