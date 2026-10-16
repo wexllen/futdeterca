@@ -1,4 +1,4 @@
-import type {TeamId} from './types';
+import type {TeamId} from './types.ts';
 
 export const TEAM_IDS:TeamId[]=['team-1','team-2','team-3'];
 
