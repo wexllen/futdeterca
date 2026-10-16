@@ -4,7 +4,7 @@ import {Play,Pause,RotateCcw,Plus,Users,History,Settings,Download,Upload,Trophy,
 import {KIT_PRESETS,TEAM_IDS,isPresetHex,kitNameFromHex} from './domain/kits';
 import {expireMatch,newMatch,resolveCompetitiveResult,scoreGoal,type FinishReason, type GoalSide} from './domain/match';
 import {nextRotation} from './domain/rotation';
-import {activeSession,canEndSession,endSession,hasDuplicateKit,sessionById,sortedSessions,startSession,updateActiveSession} from './domain/session';
+import {activeSession,canEndSession,endSession,sessionById,sortedSessions,startSession,updateActiveSession} from './domain/session';
 import {teamStats,totalGoals} from './domain/statistics';
 import type {AppState,Match,Player,Session,Team,TeamId,TeamStats} from './domain/types';
 import {isBackupLike,initialState,loadState,normalizeState,saveState} from './storage/state';
