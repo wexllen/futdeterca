@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Play, Pause, RotateCcw, Plus, Users, History, Settings, Download, Upload, Trophy, TimerReset} from 'lucide-react';
-import type {AppState,Color,Player,Team,TeamStats} from './domain/types';
+import type {AppState,Color,Match,Player,Team,TeamStats} from './domain/types';
 import {resolveCompetitiveResult,type FinishReason} from './domain/match';
 import {nextRotation} from './domain/rotation';
 import {teamStats} from './domain/statistics';
