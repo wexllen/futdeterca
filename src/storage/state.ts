@@ -39,10 +39,17 @@ const isSessionLike=(value:unknown):value is Session=>{
 export const isV8State=(value:unknown):value is AppState=>{
   if(!value||typeof value!=='object')return false;
   const state=value as AppState;
-  return state.version===8&&
-    (state.activeSessionId===null||typeof state.activeSessionId==='string')&&
-    Array.isArray(state.sessions)&&
-    state.sessions.every(isSessionLike);
+
+  if(state.version!==8||
+    (state.activeSessionId!==null&&typeof state.activeSessionId!=='string')||
+    !Array.isArray(state.sessions)||
+    !state.sessions.every(isSessionLike)
+  )return false;
+
+  const active=state.sessions.filter(session=>session.status==='active');
+  if(active.length>1)return false;
+  if(state.activeSessionId===null)return active.length===0;
+  return active.length===1&&active[0].id===state.activeSessionId;
 };
 
 export const normalizeState=(value:unknown):AppState=>{
