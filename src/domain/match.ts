@@ -1,4 +1,4 @@
-import type {Match,TeamId} from './types';
+import type {Match,TeamId} from './types.ts';
 
 export type FinishReason='tempo'|'2 gols';
 export type GoalSide='d'|'c';
