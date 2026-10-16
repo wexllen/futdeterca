@@ -1,0 +1,582 @@
+{
+  "version": 7,
+  "teams": {
+    "azul": {
+      "color": "azul",
+      "name": "LARANJA",
+      "hex": "#ff6a00",
+      "players": [
+        {
+          "id": "azul-0",
+          "name": "Goleiro Azul",
+          "gk": true,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "azul-1",
+          "name": "Pedrinho",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "azul-2",
+          "name": "Will",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "azul-3",
+          "name": "Caramez",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "azul-4",
+          "name": "Kaua",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "azul-5",
+          "name": "Jogador A5",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        }
+      ]
+    },
+    "verde": {
+      "color": "verde",
+      "name": "Branco",
+      "hex": "#ffffff",
+      "players": [
+        {
+          "id": "verde-0",
+          "name": "Goleiro Vermelho",
+          "gk": true,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "verde-1",
+          "name": "Pedrao",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "verde-2",
+          "name": "Marcelo",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "verde-3",
+          "name": "Paulinho",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "verde-4",
+          "name": "Zé",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "verde-5",
+          "name": "Erick",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        }
+      ]
+    },
+    "vermelho": {
+      "color": "vermelho",
+      "name": "Preto",
+      "hex": "#000000",
+      "players": [
+        {
+          "id": "vermelho-0",
+          "name": "Goleiro Amarelo",
+          "gk": true,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "vermelho-1",
+          "name": "Igor",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "vermelho-2",
+          "name": "Murikawa",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "vermelho-3",
+          "name": "Matheus",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "vermelho-4",
+          "name": "Plinio",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        },
+        {
+          "id": "vermelho-5",
+          "name": "Corvo",
+          "gk": false,
+          "games": 0,
+          "wins": 0,
+          "goals": 0
+        }
+      ]
+    }
+  },
+  "current": {
+    "id": "dff177d4-62f0-4d14-b90d-7a6818e939b2",
+    "defender": "azul",
+    "challenger": "vermelho",
+    "waiting": "verde",
+    "sd": 1,
+    "sc": 2,
+    "startedAt": null,
+    "endsAt": null,
+    "remaining": 173,
+    "status": "finished",
+    "events": [
+      {
+        "at": 1791936759330,
+        "type": "gol",
+        "team": "vermelho"
+      },
+      {
+        "at": 1791936797346,
+        "type": "gol",
+        "team": "azul"
+      },
+      {
+        "at": 1791936845450,
+        "type": "gol",
+        "team": "vermelho"
+      },
+      {
+        "at": 1791936845451,
+        "type": "fim"
+      }
+    ],
+    "winner": "vermelho",
+    "reason": "2 gols"
+  },
+  "history": [
+    {
+      "id": "dff177d4-62f0-4d14-b90d-7a6818e939b2",
+      "defender": "azul",
+      "challenger": "vermelho",
+      "waiting": "verde",
+      "sd": 1,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 173,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791936759330,
+          "type": "gol",
+          "team": "vermelho"
+        },
+        {
+          "at": 1791936797346,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791936845450,
+          "type": "gol",
+          "team": "vermelho"
+        },
+        {
+          "at": 1791936845451,
+          "type": "fim"
+        }
+      ],
+      "winner": "vermelho",
+      "reason": "2 gols"
+    },
+    {
+      "id": "b930ab37-bfd3-48fd-b4f5-686c3452b3ec",
+      "defender": "verde",
+      "challenger": "azul",
+      "waiting": "vermelho",
+      "sd": 0,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 150,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791936539652,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791936564315,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791936564317,
+          "type": "fim"
+        }
+      ],
+      "winner": "azul",
+      "reason": "2 gols"
+    },
+    {
+      "id": "f2156168-d177-4037-99d3-b2aff9c33f1a",
+      "defender": "verde",
+      "challenger": "vermelho",
+      "waiting": "azul",
+      "sd": 2,
+      "sc": 0,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 321,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791936213345,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791936253152,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791936253153,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "2 gols"
+    },
+    {
+      "id": "804f20dd-132d-40f9-bccf-033b38d1a7f8",
+      "defender": "verde",
+      "challenger": "azul",
+      "waiting": "vermelho",
+      "sd": 1,
+      "sc": 0,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 0,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791936081204,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791936117648,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "tempo"
+    },
+    {
+      "id": "e496fcd8-334d-4d11-af39-5d4bc8e62012",
+      "defender": "vermelho",
+      "challenger": "verde",
+      "waiting": "azul",
+      "sd": 0,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 231,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791935618266,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791935660519,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791935660519,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "2 gols"
+    },
+    {
+      "id": "217cbd8c-2a06-4d91-8aa9-983143e8fa77",
+      "defender": "azul",
+      "challenger": "vermelho",
+      "waiting": "verde",
+      "sd": 1,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 147,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791935223304,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791935256066,
+          "type": "gol",
+          "team": "vermelho"
+        },
+        {
+          "at": 1791935431494,
+          "type": "gol",
+          "team": "vermelho"
+        },
+        {
+          "at": 1791935431494,
+          "type": "fim"
+        }
+      ],
+      "winner": "vermelho",
+      "reason": "2 gols"
+    },
+    {
+      "id": "d5616dc8-9838-4451-999b-be40d6884719",
+      "defender": "verde",
+      "challenger": "azul",
+      "waiting": "vermelho",
+      "sd": 0,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 161,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791935005767,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791935127289,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791935127289,
+          "type": "fim"
+        }
+      ],
+      "winner": "azul",
+      "reason": "2 gols"
+    },
+    {
+      "id": "023e9bea-3785-48fc-bcc5-19ea3b3fe2d5",
+      "defender": "verde",
+      "challenger": "vermelho",
+      "waiting": "azul",
+      "sd": 2,
+      "sc": 0,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 155,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791934684099,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791934832827,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791934832828,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "2 gols"
+    },
+    {
+      "id": "b842410a-35e4-4d3f-87e7-304715502527",
+      "defender": "azul",
+      "challenger": "verde",
+      "waiting": "vermelho",
+      "sd": 0,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 165,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791934370876,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791934537815,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791934537815,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "2 gols"
+    },
+    {
+      "id": "96030d1c-47db-4432-a395-a4660af3f716",
+      "defender": "azul",
+      "challenger": "vermelho",
+      "waiting": "verde",
+      "sd": 2,
+      "sc": 1,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 85,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791934178618,
+          "type": "gol",
+          "team": "vermelho"
+        },
+        {
+          "at": 1791934231148,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791934254121,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791934254122,
+          "type": "fim"
+        }
+      ],
+      "winner": "azul",
+      "reason": "2 gols"
+    },
+    {
+      "id": "c0e1115c-a24c-450d-9f7a-6bfeff391e2c",
+      "defender": "verde",
+      "challenger": "azul",
+      "waiting": "vermelho",
+      "sd": 1,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 168,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791933744637,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791933849270,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791933890259,
+          "type": "gol",
+          "team": "azul"
+        },
+        {
+          "at": 1791933890259,
+          "type": "fim"
+        }
+      ],
+      "winner": "azul",
+      "reason": "2 gols"
+    },
+    {
+      "id": "919af423-c732-48ea-93a8-83c1f6a49516",
+      "defender": "vermelho",
+      "challenger": "verde",
+      "waiting": "azul",
+      "sd": 0,
+      "sc": 2,
+      "startedAt": null,
+      "endsAt": null,
+      "remaining": 86,
+      "status": "finished",
+      "events": [
+        {
+          "at": 1791933482341,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791933607647,
+          "type": "gol",
+          "team": "verde"
+        },
+        {
+          "at": 1791933607647,
+          "type": "fim"
+        }
+      ],
+      "winner": "verde",
+      "reason": "2 gols"
+    }
+  ]
+}
