@@ -28,11 +28,13 @@ Stack atual:
 
 ```bash
 npm ci
+npm test
+npm run typecheck
 npm run build
 npm run dev
 ```
 
-No estado atual da `main`, ainda não existe suíte de testes automatizados configurada no `package.json`.
+A suíte de caracterização usa o test runner nativo do Node. Antes de abrir PR, execute `npm test`, `npm run typecheck` e `npm run build`.
 
 ## Regras de trabalho
 
