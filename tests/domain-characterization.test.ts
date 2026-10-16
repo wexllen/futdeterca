@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {nextRotation,resolveCompetitiveResult,teamStats} from '../src/domain/legacyRules.ts';
+import {resolveCompetitiveResult} from '../src/domain/match.ts';
+import {nextRotation} from '../src/domain/rotation.ts';
+import {teamStats} from '../src/domain/statistics.ts';
 
 const base={defender:'azul' as const,challenger:'verde' as const,waiting:'vermelho' as const};
 

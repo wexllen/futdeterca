@@ -28,12 +28,17 @@ AppState
 └── history
 ```
 
-A maior parte da aplicação ainda está concentrada em `src/main.tsx`, incluindo:
+A interface e a coordenação de estado ainda estão concentradas em `src/main.tsx`, mas a primeira extração de domínio já foi iniciada.
+
+Extraído para `src/domain/`:
 - tipos;
-- domínio;
+- resolução de resultado competitivo;
+- rotação;
+- estatísticas derivadas.
+
+Ainda permanecem em `src/main.tsx`:
 - estado React;
 - timer;
-- rotação;
 - persistência;
 - migração/normalização;
 - import/export;
@@ -44,7 +49,7 @@ O workflow atual executa:
 - `npm run build`
 - deploy para GitHub Pages
 
-Ainda não há suíte de testes automatizados configurada no `package.json`.
+Há testes de caracterização configurados com o test runner nativo do Node. O CI executa testes, typecheck e build em pull requests.
 
 ## Dívidas conhecidas
 

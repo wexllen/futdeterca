@@ -1,14 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {teamStats,totalGoals,type LegacyMatchRecord} from '../src/domain/legacyRules.ts';
+import {teamStats,totalGoals} from '../src/domain/statistics.ts';
+import type {Match} from '../src/domain/types.ts';
 
 const fixture=JSON.parse(
   readFileSync(new URL('./fixtures/cefas-v7-real.json',import.meta.url),'utf8'),
 ) as {
   version:number;
   teams:Record<string,{hex:string}>;
-  history:LegacyMatchRecord[];
+  history:Match[];
 };
 
 test('backup real da primeira terca preserva os fatos observados',()=>{
