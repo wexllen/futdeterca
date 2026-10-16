@@ -26,22 +26,22 @@ Veja também: [Gestão do projeto](./project-management.md).
 
 ## P0 — V0.7.0 — Sessões/Terças + schema V8 — Issue #7
 
-- [ ] introduzir IDs neutros `team-1`, `team-2`, `team-3`;
-- [ ] mapear IDs legados V7;
-- [ ] introduzir schema V8;
-- [ ] extrair persistência/migrações;
-- [ ] introduzir `Session`;
-- [ ] permitir iniciar terça;
-- [ ] permitir encerrar terça;
-- [ ] garantir no máximo uma terça ativa;
-- [ ] arquivar terças anteriores;
-- [ ] histórico por sessão;
-- [ ] snapshot dos coletes por sessão;
-- [ ] preservar/reconstruir `startedAt` / `finishedAt`;
-- [ ] corrigir semântica de `00:00`: tempo esgotado não encerra automaticamente;
-- [ ] migrar V7 para V8;
-- [ ] preservar 12 partidas, 27 gols e estatísticas da fixture real;
-- [ ] validar export/import V8;
+- [x] introduzir IDs neutros `team-1`, `team-2`, `team-3`;
+- [x] mapear IDs legados V7;
+- [x] introduzir schema V8;
+- [x] extrair persistência/migrações;
+- [x] introduzir `Session`;
+- [x] permitir iniciar terça;
+- [x] permitir encerrar terça;
+- [x] garantir no máximo uma terça ativa;
+- [x] arquivar terças anteriores;
+- [x] histórico por sessão;
+- [x] snapshot dos coletes por sessão;
+- [x] preservar/reconstruir `startedAt` / `finishedAt`;
+- [x] corrigir semântica de `00:00`: tempo esgotado não encerra automaticamente;
+- [x] migrar V7 para V8;
+- [x] preservar 12 partidas, 27 gols e estatísticas da fixture real;
+- [x] validar export/import V8;
 - [ ] validar publicação sem regressão.
 
 ## P0 — V0.7.x — consolidação arquitetural — Issue #8
