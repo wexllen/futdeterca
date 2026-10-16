@@ -1,0 +1,36 @@
+name: Feature / evolução
+description: Evolução funcional, de domínio ou arquitetura do CEFAS
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema / oportunidade
+      description: O que foi observado e por que vale resolver?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Resultado esperado
+      description: Descreva o comportamento desejado, não apenas a implementação.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite
+      description: Como saberemos que está pronto?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      options:
+        - P0
+        - P1
+        - P2
+    validations:
+      required: true
