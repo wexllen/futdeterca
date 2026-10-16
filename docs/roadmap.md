@@ -19,10 +19,10 @@ A `main` está atualmente neste estágio.
 
 - [x] Criar testes de caracterização do comportamento atual
 - [x] Adicionar test runner
-- [ ] Extrair tipos de domínio
-- [ ] Extrair regras de partida
-- [ ] Extrair rotação
-- [ ] Extrair estatísticas
+- [x] Extrair tipos de domínio
+- [x] Extrair regras de partida
+- [x] Extrair rotação
+- [x] Extrair estatísticas
 - [ ] Extrair persistência/migrações
 - [ ] Introduzir `Session`
 - [ ] Permitir iniciar terça
