@@ -25,3 +25,30 @@
 
 /* v0.6.8 — hardening pós-primeiro uso */
 .kit-option:disabled,.kit-option.disabled{opacity:.38;cursor:not-allowed;background:#f4f2ed}.kit-option:disabled:hover,.kit-option.disabled:hover{border-color:#d9d6cd}.kit-custom.disabled input{cursor:not-allowed}.kit-lock-note{margin-top:9px;font-size:10px;font-weight:600;color:#817f78;line-height:1.35}
+
+
+/* v0.7.0 — sessões/terças */
+.session-landing{max-width:680px;margin:70px auto;background:#fff;border-top:3px solid #111;padding:42px;text-align:center}
+.session-landing>svg{width:38px;height:38px;margin-bottom:12px}
+.session-landing h2{font:600 32px 'Oswald';text-transform:uppercase;margin:6px 0 10px}
+.session-landing p{color:#666;line-height:1.5;max-width:500px;margin:0 auto 10px}
+.session-landing>small{display:block;margin:15px 0;color:#777}
+.session-landing button,.session-actions button{border:0;background:#111;color:#fff;padding:12px 18px;font-weight:700;cursor:pointer}
+.history-title{display:flex;justify-content:space-between;align-items:end;gap:15px}
+.session-actions{display:flex;gap:8px}
+.session-actions .end-session{background:#8f2424}
+.session-switcher{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:12px}
+.session-switcher button{min-width:145px;border:1px solid #d9d6cd;background:#fff;padding:10px 12px;text-align:left;cursor:pointer}
+.session-switcher button.active{border-color:#111;box-shadow:inset 0 0 0 1px #111}
+.session-switcher strong{display:block;font:600 15px 'Oswald';text-transform:uppercase}
+.session-switcher small{display:block;margin-top:3px;font-size:9px;color:#777}
+.expired-note,.session-warning{margin:0 20px 16px;padding:10px 12px;background:#fff4d7;border:1px solid #e7d39b;font-size:11px;font-weight:600;color:#6b581f}
+.controls .time-finish{background:#111;color:#fff;border-color:#111}
+@media(max-width:700px){
+  .session-landing{margin:30px 0;padding:28px 18px}
+  .session-landing h2{font-size:26px}
+  .history-title{align-items:stretch;flex-direction:column}
+  .session-actions button{width:100%}
+  .session-switcher button{min-width:132px}
+  .expired-note,.session-warning{margin:0 12px 12px}
+}
