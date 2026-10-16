@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Play, Pause, RotateCcw, Plus, Users, History, Settings, Download, Upload, Trophy, TimerReset} from 'lucide-react';
+import type {AppState,Color,Player,Team,TeamStats} from './domain/types';
+import {resolveCompetitiveResult,type FinishReason} from './domain/match';
+import {nextRotation} from './domain/rotation';
+import {teamStats} from './domain/statistics';
 import './styles.css';
 
-type Color='azul'|'verde'|'vermelho';
-type Player={id:string;name:string;gk:boolean;games:number;wins:number;goals:number};
-type Team={color:Color;name:string;hex:string;players:Player[]};
-type Match={id:string;defender:Color;challenger:Color;waiting:Color;sd:number;sc:number;startedAt:number|null;endsAt:number|null;remaining:number;status:'ready'|'running'|'paused'|'penalties'|'finished';winner?:Color;reason?:string;events:{at:number;type:string;team?:Color;player?:string}[]};
-type AppState={version:number;teams:Record<Color,Team>;current:Match;history:Match[]};
-type TeamStats={games:number;wins:number;losses:number;goals:number};
 const COLORS:Color[]=['azul','verde','vermelho'];
 const DEFAULT_HEX:Record<Color,string>={azul:'#2368d8',verde:'#d8443d',vermelho:'#f4d03f'};
 const KIT_PRESETS=[
@@ -31,7 +29,6 @@ const load=():AppState=>{try{const x=localStorage.getItem('terca-fc:state');retu
 const fmt=(s:number)=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
 const fmtNow=(d:Date)=>{const weekday=new Intl.DateTimeFormat('pt-BR',{weekday:'long'}).format(d).replace('-feira','').toUpperCase();const date=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);const time=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(d);return `${weekday} • ${date} • ${time}`};
 const teamStyle=(t:Team)=>({'--team':t.hex} as React.CSSProperties);
-const teamStats=(history:Match[],color:Color):TeamStats=>{const games=history.filter(m=>m.defender===color||m.challenger===color);const wins=games.filter(m=>m.winner===color).length;const goals=games.reduce((total,m)=>total+(m.defender===color?m.sd:m.sc),0);return {games:games.length,wins,losses:games.length-wins,goals}};
 const textColor=(hex:string)=>{const h=hex.replace('#','');if(h.length!==6)return '#fff';const [r,g,b]=[0,2,4].map(i=>parseInt(h.slice(i,i+2),16));return (r*299+g*587+b*114)/1000>155?'#111':'#fff'};
 
 function App(){
@@ -39,11 +36,11 @@ function App(){
  useEffect(()=>{const id=setInterval(()=>setNow(new Date()),1000);return()=>clearInterval(id)},[]);
  useEffect(()=>localStorage.setItem('terca-fc:state',JSON.stringify(state)),[state]);
  useEffect(()=>{if(state.current.status!=='running')return; const id=setInterval(()=>setState(s=>{if(s.current.status!=='running'||!s.current.endsAt)return s; const r=Math.max(0,Math.ceil((s.current.endsAt-Date.now())/1000)); if(r<=0)return finish(s,'tempo'); if(r===s.current.remaining)return s; return {...s,current:{...s.current,remaining:r}}}),250);return()=>clearInterval(id)},[state.current.status,state.current.id]);
- const finish=(s:AppState,reason:string):AppState=>{const m=s.current;if(m.status==='finished'||m.status==='penalties')return s; const isFirstMatch=s.history.length===0; if(reason==='tempo'&&m.sd===m.sc&&isFirstMatch){const shootout={...m,status:'penalties' as const,reason:'penaltis',remaining:0,startedAt:null,endsAt:null,events:[...m.events,{at:Date.now(),type:'penaltis'}]};return {...s,current:shootout}} const winner:Color=m.sd>m.sc?m.defender:m.challenger; const done={...m,status:'finished' as const,winner,reason,remaining:reason==='tempo'?0:m.remaining,startedAt:null,endsAt:null,events:[...m.events,{at:Date.now(),type:'fim'}]}; return {...s,current:done,history:[done,...s.history]}};
+ const finish=(s:AppState,reason:FinishReason):AppState=>{const m=s.current;if(m.status==='finished'||m.status==='penalties')return s; const result=resolveCompetitiveResult(m,s.history.length,reason); if(result==='penalties'){const shootout={...m,status:'penalties' as const,reason:'penaltis',remaining:0,startedAt:null,endsAt:null,events:[...m.events,{at:Date.now(),type:'penaltis'}]};return {...s,current:shootout}} const winner:Color=result; const done={...m,status:'finished' as const,winner,reason,remaining:reason==='tempo'?0:m.remaining,startedAt:null,endsAt:null,events:[...m.events,{at:Date.now(),type:'fim'}]}; return {...s,current:done,history:[done,...s.history]}};
  const choosePenaltyWinner=(winner:Color)=>setState(s=>{const m=s.current;if(m.status!=='penalties'||(winner!==m.defender&&winner!==m.challenger))return s;const done={...m,status:'finished' as const,winner,reason:'penaltis',events:[...m.events,{at:Date.now(),type:'fim_penaltis',team:winner}]};return {...s,current:done,history:[done,...s.history]}});
  const goal=(side:'d'|'c')=>setState(s=>{let m={...s.current,events:[...s.current.events]};if(m.status==='finished')return s;if(m.status==='ready'){const now=Date.now();m.status='running';m.startedAt=now;m.endsAt=now+m.remaining*1000;} if(side==='d')m.sd++;else m.sc++;m.events.push({at:Date.now(),type:'gol',team:side==='d'?m.defender:m.challenger}); const ns={...s,current:m};return (m.sd>=2||m.sc>=2)?finish(ns,'2 gols'):ns});
  const startPause=()=>setState(s=>{const m=s.current;if(m.status==='finished')return s;if(m.status==='running'){const r=Math.max(0,Math.ceil(((m.endsAt??Date.now())-Date.now())/1000));if(r<=0)return finish(s,'tempo');return {...s,current:{...m,status:'paused',remaining:r,startedAt:null,endsAt:null}}}const now=Date.now();return {...s,current:{...m,status:'running',startedAt:now,endsAt:now+m.remaining*1000}}});
- const next=()=>setState(s=>{const m=s.current;if(!m.winner)return s; const loser=m.winner===m.defender?m.challenger:m.defender; return {...s,current:newMatch(m.winner,m.waiting,loser)}});
+ const next=()=>setState(s=>{const rotation=nextRotation(s.current);if(!rotation)return s;return {...s,current:newMatch(rotation.defender,rotation.challenger,rotation.waiting)}});
  const resetCurrent=()=>setState(s=>{const m=s.current;const hasProgress=m.status!=='ready'||m.sd>0||m.sc>0||m.events.length>0||m.remaining<420;if(hasProgress&&!confirm('Reiniciar a partida atual? O placar, o tempo e os eventos desta partida serão descartados.'))return s;return {...s,current:newMatch(m.defender,m.challenger,m.waiting)}});
  const team=(c:Color)=>state.teams[c];
  const stats=(c:Color)=>teamStats(state.history,c);
