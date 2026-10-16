@@ -17,8 +17,8 @@ A `main` está atualmente neste estágio.
 
 ## P0 — V0.7.0 — Sessões/Terças + início da evolução arquitetural
 
-- [ ] Criar testes de caracterização do comportamento atual
-- [ ] Adicionar test runner
+- [x] Criar testes de caracterização do comportamento atual
+- [x] Adicionar test runner
 - [ ] Extrair tipos de domínio
 - [ ] Extrair regras de partida
 - [ ] Extrair rotação
@@ -35,7 +35,7 @@ A `main` está atualmente neste estágio.
 - [ ] Corrigir semântica de `00:00`: tempo esgotado não encerra automaticamente
 - [ ] Migrar V7 para novo schema
 - [ ] Usar backup real da primeira terça como fixture de regressão
-- [ ] Atualizar pipeline para testes/typecheck/build antes do deploy
+- [x] Atualizar pipeline para testes/typecheck/build antes do deploy
 
 ## P0 — V0.7.x — consolidação
 
