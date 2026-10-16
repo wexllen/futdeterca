@@ -93,3 +93,11 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 - A opção **Outra cor** mantém o seletor livre e gera automaticamente um rótulo simples para a cor escolhida.
 - O formato do estado V7 é preservado para manter compatibilidade com backups existentes; o campo interno `name` passa a ser derivado da cor do colete.
 - Resumo J/V/D/G no Histórico, derivado automaticamente das partidas encerradas.
+
+### V0.6.8 — hardening pós-primeiro uso
+- Reiniciar uma partida em andamento ou já alterada pede confirmação antes de descartar placar, tempo e eventos.
+- A mesma cor de colete não pode ser escolhida para dois times na configuração da noite.
+- As cores dos coletes ficam bloqueadas depois do início da primeira partida, evitando que o histórico mude de identidade visual no meio da terça.
+- Restauração de backup valida a estrutura básica do arquivo e pede confirmação antes de substituir os dados locais.
+- O seletor de arquivo é limpo após a restauração, permitindo selecionar novamente o mesmo backup quando necessário.
+- URLs temporárias criadas para download de backup são liberadas após o uso.
