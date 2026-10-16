@@ -1,6 +1,6 @@
-import {DEFAULT_HEX,TEAM_IDS} from './kits';
-import {newMatch} from './match';
-import type {AppState,Player,Session,Team,TeamId} from './types';
+import {DEFAULT_HEX,TEAM_IDS} from './kits.ts';
+import {newMatch} from './match.ts';
+import type {AppState,Player,Session,Team,TeamId} from './types.ts';
 
 const DEFAULT_PLAYERS:Record<TeamId,string[]>={
   'team-1':['Goleiro Azul','Jogador A1','Jogador A2','Jogador A3','Jogador A4','Jogador A5'],
