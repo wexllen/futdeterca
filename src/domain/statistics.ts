@@ -1,4 +1,4 @@
-import type {Match,TeamId,TeamStats} from './types';
+import type {Match,TeamId,TeamStats} from './types.ts';
 
 export const teamStats=(history:Match[],team:TeamId):TeamStats=>{
   const games=history.filter(
