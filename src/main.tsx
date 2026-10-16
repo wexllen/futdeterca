@@ -6,7 +6,7 @@ import {expireMatch,newMatch,resolveCompetitiveResult,scoreGoal,type FinishReaso
 import {nextRotation} from './domain/rotation';
 import {activeSession,canEndSession,endSession,sessionById,sortedSessions,startSession,updateActiveSession} from './domain/session';
 import {teamStats,totalGoals} from './domain/statistics';
-import type {AppState,Match,Player,Session,Team,TeamId,TeamStats} from './domain/types';
+import type {AppState,Match,Session,Team,TeamId,TeamStats} from './domain/types';
 import {isBackupLike,initialState,loadState,normalizeState,saveState} from './storage/state';
 import './styles.css';
 
@@ -412,8 +412,8 @@ function TeamEditor({
   kitLocked:boolean;
   usedHexes:string[];
 }){
-  const update=(index:number,key:keyof Player,value:unknown)=>{
-    const players=team.players.map((player,current)=>current===index?{...player,[key]:value}:player);
+  const updateName=(index:number,name:string)=>{
+    const players=team.players.map((player,current)=>current===index?{...player,name}:player);
     onChange({...team,players});
   };
 
@@ -464,7 +464,7 @@ function TeamEditor({
     {team.players.map((player,index)=>
       <div className="player" key={player.id}>
         <span>{player.gk?'GK':String(index).padStart(2,'0')}</span>
-        <input value={player.name} onChange={event=>update(index,'name',event.target.value)}/>
+        <input value={player.name} onChange={event=>updateName(index,event.target.value)}/>
       </div>
     )}
   </div>;
