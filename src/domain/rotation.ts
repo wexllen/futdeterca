@@ -1,4 +1,4 @@
-import type {Match} from './types';
+import type {Match} from './types.ts';
 
 export const nextRotation=(
   match:Pick<Match,'defender'|'challenger'|'waiting'|'winner'>,
