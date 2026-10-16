@@ -10,12 +10,22 @@ type Match={id:string;defender:Color;challenger:Color;waiting:Color;sd:number;sc
 type AppState={version:number;teams:Record<Color,Team>;current:Match;history:Match[]};
 type TeamStats={games:number;wins:number;losses:number};
 const COLORS:Color[]=['azul','verde','vermelho'];
-const LABEL:Record<Color,string>={azul:'Azul',verde:'Vermelho',vermelho:'Amarelo'};
 const DEFAULT_HEX:Record<Color,string>={azul:'#2368d8',verde:'#d8443d',vermelho:'#f4d03f'};
-const seed=(color:Color,names:string[]):Team=>({color,name:LABEL[color],hex:DEFAULT_HEX[color],players:names.map((name,i)=>({id:`${color}-${i}`,name,gk:i===0,games:0,wins:0,goals:0}))});
+const KIT_PRESETS=[
+ {name:'Branco',hex:'#ffffff'},
+ {name:'Preto',hex:'#000000'},
+ {name:'Vermelho',hex:'#d8443d'},
+ {name:'Laranja',hex:'#ff6a00'},
+ {name:'Amarelo',hex:'#f4d03f'},
+ {name:'Azul',hex:'#2368d8'},
+ {name:'Verde',hex:'#239b67'},
+] as const;
+const kitNameFromHex=(hex:string)=>{const raw=hex.replace('#','');if(!/^[0-9a-f]{6}$/i.test(raw))return 'Colete';const r=parseInt(raw.slice(0,2),16)/255,g=parseInt(raw.slice(2,4),16)/255,b=parseInt(raw.slice(4,6),16)/255;const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min,l=(max+min)/2;if(l>=.92)return 'Branco';if(l<=.1)return 'Preto';const s=d===0?0:d/(1-Math.abs(2*l-1));if(s<=.12)return 'Cinza';let h=0;if(d!==0){if(max===r)h=60*(((g-b)/d)%6);else if(max===g)h=60*((b-r)/d+2);else h=60*((r-g)/d+4);if(h<0)h+=360}if(h<15||h>=345)return 'Vermelho';if(h<45)return 'Laranja';if(h<70)return 'Amarelo';if(h<165)return 'Verde';if(h<255)return 'Azul';if(h<295)return 'Roxo';return 'Rosa'};
+const isPresetHex=(hex:string)=>KIT_PRESETS.some(k=>k.hex.toLowerCase()===hex.toLowerCase());
+const seed=(color:Color,names:string[]):Team=>({color,name:kitNameFromHex(DEFAULT_HEX[color]),hex:DEFAULT_HEX[color],players:names.map((name,i)=>({id:`${color}-${i}`,name,gk:i===0,games:0,wins:0,goals:0}))});
 const newMatch=(d:Color='azul',c:Color='verde',w:Color='vermelho'):Match=>({id:crypto.randomUUID(),defender:d,challenger:c,waiting:w,sd:0,sc:0,startedAt:null,endsAt:null,remaining:420,status:'ready',events:[]});
 const initial=():AppState=>({version:7,teams:{azul:seed('azul',['Goleiro Azul','Jogador A1','Jogador A2','Jogador A3','Jogador A4','Jogador A5']),verde:seed('verde',['Goleiro Vermelho','Jogador V1','Jogador V2','Jogador V3','Jogador V4','Jogador V5']),vermelho:seed('vermelho',['Goleiro Amarelo','Jogador M1','Jogador M2','Jogador M3','Jogador M4','Jogador M5'])},current:newMatch(),history:[]});
-const normalize=(parsed:any):AppState=>{const base=initial();const teams=Object.fromEntries(COLORS.map(c=>{let raw=parsed?.teams?.[c]||base.teams[c];if(c==='verde'&&raw.name==='Verde'&&String(raw.hex).toLowerCase()==='#239b67')raw={...raw,name:'Vermelho',hex:'#d8443d'};if(c==='vermelho'&&raw.name==='Vermelho'&&String(raw.hex).toLowerCase()==='#d8443d'&&parsed?.teams?.verde?.name==='Vermelho'&&String(parsed?.teams?.verde?.hex||'').toLowerCase()==='#d8443d')raw={...raw,name:'Amarelo',hex:'#f4d03f'};const players=(Array.isArray(raw.players)?raw.players:base.teams[c].players).map((p:any,i:number)=>({id:p.id||`${c}-${i}`,name:p.name||`Jogador ${i+1}`,gk:Boolean(p.gk??i===0),games:Number(p.games||0),wins:Number(p.wins||0),goals:Number(p.goals||0)}));return [c,{color:c,name:raw.name||LABEL[c],hex:raw.hex||DEFAULT_HEX[c],players}] } )) as Record<Color,Team>;const rawCurrent=parsed?.current||base.current;const current={...rawCurrent,endsAt:rawCurrent.endsAt??null};if(current.status==='running'&&!current.endsAt)current.endsAt=Date.now()+current.remaining*1000;return {...base,...parsed,version:7,teams,current,history:Array.isArray(parsed?.history)?parsed.history:[]}};
+const normalize=(parsed:any):AppState=>{const base=initial();const teams=Object.fromEntries(COLORS.map(c=>{let raw=parsed?.teams?.[c]||base.teams[c];if(c==='verde'&&raw.name==='Verde'&&String(raw.hex).toLowerCase()==='#239b67')raw={...raw,name:'Vermelho',hex:'#d8443d'};if(c==='vermelho'&&raw.name==='Vermelho'&&String(raw.hex).toLowerCase()==='#d8443d'&&parsed?.teams?.verde?.name==='Vermelho'&&String(parsed?.teams?.verde?.hex||'').toLowerCase()==='#d8443d')raw={...raw,name:'Amarelo',hex:'#f4d03f'};const players=(Array.isArray(raw.players)?raw.players:base.teams[c].players).map((p:any,i:number)=>({id:p.id||`${c}-${i}`,name:p.name||`Jogador ${i+1}`,gk:Boolean(p.gk??i===0),games:Number(p.games||0),wins:Number(p.wins||0),goals:Number(p.goals||0)}));const hex=String(raw.hex||DEFAULT_HEX[c]).toLowerCase();return [c,{color:c,name:kitNameFromHex(hex),hex,players}] } )) as Record<Color,Team>;const rawCurrent=parsed?.current||base.current;const current={...rawCurrent,endsAt:rawCurrent.endsAt??null};if(current.status==='running'&&!current.endsAt)current.endsAt=Date.now()+current.remaining*1000;return {...base,...parsed,version:7,teams,current,history:Array.isArray(parsed?.history)?parsed.history:[]}};
 const load=():AppState=>{try{const x=localStorage.getItem('terca-fc:state');return x?normalize(JSON.parse(x)):initial()}catch{return initial()}};
 const fmt=(s:number)=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
 const fmtNow=(d:Date)=>{const weekday=new Intl.DateTimeFormat('pt-BR',{weekday:'long'}).format(d).replace('-feira','').toUpperCase();const date=new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);const time=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(d);return `${weekday} • ${date} • ${time}`};
@@ -68,12 +78,12 @@ function InitialMatchSelector({state,setState}:{state:AppState;setState:React.Di
 function TeamSide({team,role,stats}:{team:Team;role:string;stats:TeamStats}){return <div className="team-side"><div className="shirt" style={teamStyle(team)}/><small>{role}</small><h2>{team.name}</h2><div className="team-record"><b>{stats.wins}V</b><span>{stats.losses}D</span></div></div>}
 function TeamEditor({team,stats,onChange}:{team:Team;stats:TeamStats;onChange:(t:Team)=>void}){
  const update=(i:number,k:keyof Player,v:any)=>{const ps=team.players.map((p,x)=>x===i?{...p,[k]:v}:p);onChange({...team,players:ps})};
+ const chooseKit=(hex:string)=>onChange({...team,hex:hex.toLowerCase(),name:kitNameFromHex(hex)});
  return <div className="team-card" style={teamStyle(team)}>
-   <div className="team-card-head"><div><small>TIME / COLETE</small><h3>{team.name}</h3></div><div className="result-counter"><span><b>{stats.wins}</b> vitórias</span><span><b>{stats.losses}</b> derrotas</span><small>{stats.games} jogos</small></div></div>
+   <div className="team-card-head"><div><small>COLETE</small><h3>{team.name}</h3></div><div className="result-counter"><span><b>{stats.wins}</b> vitórias</span><span><b>{stats.losses}</b> derrotas</span><small>{stats.games} jogos</small></div></div>
    <div className="kit-editor">
-     <label className="color-picker"><input type="color" value={team.hex} onChange={e=>onChange({...team,hex:e.target.value})}/><span style={{background:team.hex}}/></label>
-     <div><small>NOME DO TIME</small><input className="kit-name" value={team.name} maxLength={18} onChange={e=>onChange({...team,name:e.target.value})} onBlur={e=>{if(!e.target.value.trim())onChange({...team,name:LABEL[team.color]})}}/></div>
-     <code>{team.hex.toUpperCase()}</code>
+     <div className="kit-current"><span className="kit-current-swatch" style={{background:team.hex}}/><div><small>COLETE SELECIONADO</small><strong>{team.name}</strong><code>{team.hex.toUpperCase()}</code></div></div>
+     <div className="kit-presets">{KIT_PRESETS.map(k=>{const selected=k.hex.toLowerCase()===team.hex.toLowerCase();return <button type="button" key={k.name} className={`kit-option ${selected?'selected':''}`} aria-pressed={selected} onClick={()=>chooseKit(k.hex)}><span className="kit-swatch" style={{background:k.hex}}/><b>{k.name}</b></button>})}<label className={`kit-option kit-custom ${!isPresetHex(team.hex)?'selected':''}`}><span className="kit-swatch" style={{background:team.hex}}/><b>Outra cor</b><input aria-label="Escolher outra cor de colete" type="color" value={team.hex} onChange={e=>chooseKit(e.target.value)}/></label></div>
    </div>
    {team.players.map((p,i)=><div className="player" key={p.id}><span>{p.gk?'GK':String(i).padStart(2,'0')}</span><input value={p.name} onChange={e=>update(i,'name',e.target.value)}/></div>)}
  </div>

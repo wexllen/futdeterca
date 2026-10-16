@@ -86,3 +86,9 @@ O conceito de Overall/OVR foi removido completamente desta versão.
 
 - O campo está sendo “normalizado” cedo demais: quando o valor vira vazio, o código repõe imediatamente o nome anterior.
 - Agora o campo NOME DO TIME pode ficar vazio enquanto você apaga e digita outro nome. O valor padrão só volta se você sair do campo deixando-o realmente vazio.
+
+## V0.6.8 — seleção rápida de coletes
+- A configuração dos times passa a ser feita pela cor do colete, sem campo separado para nome do time.
+- Cores rápidas: Branco, Preto, Vermelho, Laranja, Amarelo, Azul e Verde.
+- A opção **Outra cor** mantém o seletor livre e gera automaticamente um rótulo simples para a cor escolhida.
+- O formato do estado V7 é preservado para manter compatibilidade com backups existentes; o campo interno `name` passa a ser derivado da cor do colete.
