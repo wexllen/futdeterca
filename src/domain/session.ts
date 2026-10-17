@@ -8,6 +8,25 @@ const DEFAULT_PLAYERS:Record<TeamId,string[]>={
   'team-3':['Goleiro Amarelo','Jogador M1','Jogador M2','Jogador M3','Jogador M4','Jogador M5'],
 };
 
+const seedTeam=(id:TeamId):Team=>({
+  id,
+  hex:DEFAULT_HEX[id],
+  players:DEFAULT_PLAYERS[id].map((name,index)=>({
+    id:`${id}-${index}`,
+    name,
+    gk:index===0,
+    games:0,
+    wins:0,
+    goals:0,
+  })),
+});
+
+export const defaultTeams=():Record<TeamId,Team>=>({
+  'team-1':seedTeam('team-1'),
+  'team-2':seedTeam('team-2'),
+  'team-3':seedTeam('team-3'),
+});
+
 
 export const localDateKey=(date:Date)=>{
   const year=date.getFullYear();
