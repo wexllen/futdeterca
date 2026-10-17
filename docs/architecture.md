@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## V0.7.0
+## V0.7.1
 
 Stack:
 - React
@@ -83,6 +83,14 @@ Responsável por:
 ### UI
 `main.tsx` ainda concentra componentes e coordenação React. A extração de componentes/hook de timer fica para V0.7.x.
 
+### Nova terça
+
+Uma nova `Session` começa com a composição padrão da aplicação:
+- coletes Azul, Vermelho e Amarelo;
+- jogadores placeholder/default.
+
+Ela não herda coletes nem jogadores da sessão anterior. Sessões encerradas permanecem preservadas para consulta histórica.
+
 ## Migração V7 → V8
 
 Mapeamento técnico:
@@ -131,7 +139,8 @@ O test runner nativo do Node cobre:
 - migração do backup V7 real;
 - IDs neutros;
 - preservação de 12 partidas / 27 gols;
-- ciclo encerrar sessão → iniciar outra.
+- ciclo encerrar sessão → iniciar outra;
+- nova sessão com defaults sem alterar a sessão anterior.
 
 O CI executa:
 - `npm ci`
