@@ -28,13 +28,20 @@ Stack atual:
 
 ```bash
 npm ci
-npm test
-npm run typecheck
-npm run build
+npm run check
 npm run dev
 ```
 
-A suíte de caracterização usa o test runner nativo do Node. Antes de abrir PR, execute `npm test`, `npm run typecheck` e `npm run build`.
+A suíte de caracterização usa o test runner nativo do Node. Antes de abrir PR, execute `npm run check`, que agrega testes, typecheck e build.
+
+## Estrutura de responsabilidades
+
+- `src/domain`: regras puras;
+- `src/storage`: persistência e migrações;
+- `src/hooks`: efeitos React reutilizáveis;
+- `src/components`: UI por responsabilidade;
+- `src/App.tsx`: orquestração;
+- `src/main.tsx`: somente bootstrap.
 
 ## Regras de trabalho
 

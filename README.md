@@ -48,9 +48,13 @@ A cor do colete é apenas um atributo visual da sessão.
 
 ```text
 src/
-├── domain/
-├── storage/
-├── main.tsx
+├── components/   # telas e componentes maiores
+├── domain/       # regras puras do CEFAS
+├── hooks/        # efeitos React reutilizáveis
+├── storage/      # estado local e migrações
+├── ui/           # helpers de apresentação
+├── App.tsx       # orquestração da aplicação
+├── main.tsx      # bootstrap React
 └── styles.css
 ```
 
@@ -68,11 +72,11 @@ Requer Node.js 22+.
 
 ```bash
 npm ci
-npm test
-npm run typecheck
-npm run build
+npm run check
 npm run dev
 ```
+
+`npm run check` executa testes, typecheck e build.
 
 ## Deploy
 

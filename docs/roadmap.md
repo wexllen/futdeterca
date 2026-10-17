@@ -64,13 +64,15 @@ Veja também: [Gestão do projeto](./project-management.md).
 
 ## P0 — V0.7.x — consolidação arquitetural — Issue #8
 
-- [ ] extrair componentes React restantes;
-- [ ] extrair hook de timer;
-- [ ] reduzir responsabilidades de `main.tsx`;
+- [x] extrair componentes React maiores;
+- [x] extrair hook de timer;
+- [x] reduzir `main.tsx` ao bootstrap React;
 - [x] consolidar camada de storage/migrations;
-- [ ] avaliar ESLint e Prettier;
+- [x] extrair helpers compartilhados de apresentação;
+- [x] avaliar ESLint e Prettier — adoção adiada até existir necessidade concreta;
 - [x] revisar README;
-- [ ] fechar divergências restantes entre docs e implementação.
+- [x] alinhar documentação e implementação;
+- [x] manter testes/typecheck/build como quality gate.
 
 ## P1 — V0.8.0 — jogadores independentes dos coletes — Issue #9
 
