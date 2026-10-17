@@ -11,8 +11,10 @@ O backlog vivo está em GitHub Issues. Cada marco funcional possui uma issue agr
 | V0.6.8 — MVP validado em quadra | #4 | Concluído |
 | Engenharia — GitHub como fonte da verdade | #5 | Concluído |
 | Engenharia — testes, CI e domínio | #6 | Concluído |
-| V0.7.0 — Sessões/Terças + V8 | #7 | Próximo |
-| V0.7.x — consolidação arquitetural | #8 | Planejado |
+| V0.7.0 — Sessões/Terças + V8 | #7 | Concluído |
+| V0.7.1 — nova terça limpa | #17 | Concluído |
+| V0.7.x — consolidação arquitetural | #8 | Concluído após merge deste ciclo |
+| V0.7.2 — classificação da terça | #19 | Próximo |
 | V0.8.0 — jogadores independentes | #9 | Planejado |
 | V0.9.0 — empréstimos e goleiros | #10 | Planejado |
 | V0.10.0 — eventos individuais | #11 | Planejado |
@@ -43,22 +45,33 @@ Issues:
 - https://github.com/wexllen/futdeterca/issues/5
 - https://github.com/wexllen/futdeterca/issues/6
 
-## Próximo marco
+## Marcos V0.7 concluídos
 
 ### V0.7.0 — Sessões/Terças + schema V8
 
 Issue: https://github.com/wexllen/futdeterca/issues/7
 
-Objetivo: introduzir sessões históricas sem perder compatibilidade com o backup V7 real.
+Introduziu sessões históricas, IDs neutros, schema V8, migração V7 → V8 e a semântica de 00:00 controlada pelo operador.
 
-Esse marco inclui:
-- IDs neutros de time;
-- schema V8;
-- Session;
-- iniciar/encerrar terça;
-- histórico por sessão;
-- migração V7 -> V8;
-- correção da semântica de 00:00.
+### V0.7.1 — nova terça limpa
+
+Issue: https://github.com/wexllen/futdeterca/issues/17
+
+Uma nova sessão não herda coletes nem jogadores da sessão anterior.
+
+### V0.7.x — consolidação arquitetural
+
+Issue: https://github.com/wexllen/futdeterca/issues/8
+
+Separa componentes React, timer, apresentação, persistência e domínio sem alterar a experiência funcional.
+
+## Próximo marco funcional
+
+### V0.7.2 — classificação da terça
+
+Issue: https://github.com/wexllen/futdeterca/issues/19
+
+Objetivo: apresentar a classificação da sessão a partir das vitórias já derivadas do histórico, sem criar critério artificial de desempate.
 
 ## Convenção de trabalho
 
