@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## V0.7.1
+## Linha V0.7.x
 
 Stack:
 - React
@@ -49,6 +49,12 @@ A cor do colete é atributo da sessão e não identidade técnica.
 
 ```text
 src/
+├── components/
+│   ├── Court.tsx
+│   ├── HistoryPanel.tsx
+│   ├── SessionLanding.tsx
+│   ├── SettingsPanel.tsx
+│   └── Teams.tsx
 ├── domain/
 │   ├── types.ts
 │   ├── kits.ts
@@ -56,14 +62,20 @@ src/
 │   ├── rotation.ts
 │   ├── session.ts
 │   └── statistics.ts
+├── hooks/
+│   └── useMatchTimer.ts
 ├── storage/
 │   ├── state.ts
 │   └── migrations.ts
+├── ui/
+│   └── presentation.ts
+├── App.tsx
 ├── main.tsx
 └── styles.css
 ```
 
 ### Domain
+
 Regras puras do CEFAS:
 - IDs e tipos;
 - coletes;
@@ -73,17 +85,53 @@ Regras puras do CEFAS:
 - sessões;
 - estatísticas.
 
+O domínio não depende de componentes React.
+
 ### Storage
+
 Responsável por:
 - carregar/salvar V8;
 - validar backups;
 - migrar V7 para V8;
 - manter a mesma chave de `localStorage`.
 
-### UI
-`main.tsx` ainda concentra componentes e coordenação React. A extração de componentes/hook de timer fica para V0.7.x.
+### Hooks
 
-### Nova terça
+`useMatchTimer.ts` contém o efeito temporal do React:
+- observa uma partida em execução;
+- recalcula `remaining`;
+- leva a partida para `expired` quando chega a 00:00.
+
+O hook não decide o vencedor nem encerra fisicamente a partida. A semântica de resultado continua no domínio e a interrupção natural continua sob controle do operador.
+
+### Components
+
+Os componentes maiores foram separados por responsabilidade visual:
+- `Court`: placar, controles e resultado da partida;
+- `Teams`: confronto inicial, coletes e jogadores da sessão;
+- `HistoryPanel`: resumo e partidas por terça;
+- `SettingsPanel`: backup/importação e reset local;
+- `SessionLanding`: entrada quando não há terça ativa.
+
+### App
+
+`App.tsx` é a camada de orquestração React. Ela:
+- mantém o `AppState`;
+- coordena navegação;
+- chama regras de domínio;
+- conecta telas, timer e persistência.
+
+Ela não contém mais a implementação visual completa das telas.
+
+### Bootstrap
+
+`main.tsx` possui apenas a responsabilidade de inicializar o React e montar `App`.
+
+### UI helpers
+
+`ui/presentation.ts` reúne formatação e apresentação compartilhadas, como data/hora, cronômetro e nome/cor de colete. Esses helpers não alteram estado de domínio.
+
+## Nova terça
 
 Uma nova `Session` começa com a composição padrão da aplicação:
 - coletes Azul, Vermelho e Amarelo;
@@ -112,7 +160,7 @@ A migração:
 
 ## Tempo
 
-`00:00` agora significa estado `expired`.
+`00:00` significa estado `expired`.
 
 ```text
 running
@@ -128,9 +176,9 @@ Encerrar por tempo
 
 O relógio não decide sozinho o fim físico da jogada.
 
-## Testes / CI
+## Quality gate
 
-O test runner nativo do Node cobre:
+A suíte usa o test runner nativo do Node e cobre:
 - regras de resultado;
 - rotação;
 - estatísticas;
@@ -142,17 +190,30 @@ O test runner nativo do Node cobre:
 - ciclo encerrar sessão → iniciar outra;
 - nova sessão com defaults sem alterar a sessão anterior.
 
-O CI executa:
-- `npm ci`
-- `npm test`
-- `npm run typecheck`
-- `npm run build`
+O comando local consolidado é:
 
-## Próxima consolidação
+```bash
+npm run check
+```
 
-V0.7.x:
-- extrair componentes;
-- extrair hook do timer;
-- reduzir `main.tsx`;
-- revisar lint/format;
-- amadurecer storage/migrations conforme novos schemas surgirem.
+Ele executa testes, typecheck e build. O GitHub Actions mantém as etapas explícitas:
+- `npm ci`;
+- `npm test`;
+- `npm run typecheck`;
+- `npm run build`.
+
+### ESLint e Prettier
+
+Foram avaliados nesta consolidação e não foram adicionados agora.
+
+Decisão:
+- manter TypeScript `strict`, testes, typecheck e build como gate obrigatório;
+- evitar uma mudança ampla de dependências/formatação sem um problema concreto observado;
+- reavaliar ESLint quando regras adicionais de hooks ou complexidade de componentes justificarem o custo;
+- reavaliar Prettier quando divergência de formatação começar a gerar ruído real em PRs.
+
+A ausência dessas ferramentas não deve ser interpretada como proibição futura; é uma decisão de simplicidade para o estágio atual.
+
+## Princípio de evolução
+
+A modularização deve reduzir raio de impacto e facilitar as próximas capacidades do domínio. Não criar camadas genéricas, abstrações ou serviços sem requisito concreto.
