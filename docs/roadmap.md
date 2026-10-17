@@ -44,6 +44,15 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] validar export/import V8;
 - [ ] validar publicação sem regressão.
 
+## PATCH — V0.7.1 — nova terça limpa — Issue #17
+
+- [x] não herdar coletes da sessão anterior;
+- [x] não herdar jogadores da sessão anterior;
+- [x] restaurar Azul / Vermelho / Amarelo como coletes padrão;
+- [x] restaurar jogadores placeholder/default;
+- [x] preservar intacta a sessão anterior no histórico;
+- [x] cobrir o cenário com o backup real V7.
+
 ## P0 — V0.7.x — consolidação arquitetural — Issue #8
 
 - [ ] extrair componentes React restantes;
