@@ -42,9 +42,9 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] migrar V7 para V8;
 - [x] preservar 12 partidas, 27 gols e estatísticas da fixture real;
 - [x] validar export/import V8;
-- [ ] validar publicação sem regressão.
+- [x] validar publicação sem regressão.
 
-## PATCH — V0.7.1 — nova terça limpa — Issue #17
+## PATCH — V0.7.1 — nova terça limpa — Issue #17 — concluído
 
 - [x] não herdar coletes da sessão anterior;
 - [x] não herdar jogadores da sessão anterior;
@@ -53,14 +53,23 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] preservar intacta a sessão anterior no histórico;
 - [x] cobrir o cenário com o backup real V7.
 
+## PRÓXIMO — V0.7.2 — classificação da terça — Issue #19
+
+- [ ] ordenar os três times por quantidade de vitórias;
+- [ ] exibir 🥇🥈🥉 no resumo do Histórico;
+- [ ] manter J/V/D/G visíveis;
+- [ ] empates em vitórias compartilham colocação;
+- [ ] não criar critério artificial de desempate;
+- [ ] manter partidas em ordem cronológica.
+
 ## P0 — V0.7.x — consolidação arquitetural — Issue #8
 
 - [ ] extrair componentes React restantes;
 - [ ] extrair hook de timer;
 - [ ] reduzir responsabilidades de `main.tsx`;
-- [ ] consolidar camada de storage/migrations;
+- [x] consolidar camada de storage/migrations;
 - [ ] avaliar ESLint e Prettier;
-- [ ] revisar README;
+- [x] revisar README;
 - [ ] fechar divergências restantes entre docs e implementação.
 
 ## P1 — V0.8.0 — jogadores independentes dos coletes — Issue #9
@@ -107,9 +116,24 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [ ] times em quadra;
 - [ ] próximo time;
 - [ ] histórico;
-- [ ] eventos individuais quando disponíveis.
+- [ ] eventos individuais quando disponíveis;
+- [ ] link/QR público da sessão;
+- [ ] modelo público read-only separado do AppState;
+- [ ] manter o operador local-first como fonte oficial;
+- [ ] sincronização por API + PostgreSQL;
+- [ ] polling inicial com evolução opcional para SSE/WebSocket.
 
-Essa etapa provavelmente exige estado compartilhado/backend e deve ser um marco arquitetural separado.
+A sincronização remota deve ser uma réplica. A operação local não pode depender da internet.
+
+## Futuro — experiência da terça em vídeo — Issue #20
+
+- [ ] associar uma gravação contínua à Session;
+- [ ] usar timestamps existentes para capítulos por partida;
+- [ ] navegar para gols/eventos sem visão computacional;
+- [ ] gerar clipes a partir dos eventos registrados;
+- [ ] compartilhar a experiência após o fim da terça;
+- [ ] avaliar streaming apenas se houver demanda;
+- [ ] avaliar IA/visão computacional somente depois, aproveitando dados já registrados.
 
 ## Fora do escopo atual
 
