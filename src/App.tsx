@@ -12,7 +12,7 @@ import {activeSession,canEndSession,endSession,sessionById,sortedSessions,startS
 import {totalGoals} from './domain/statistics';
 import type {AppState,Match,Session,TeamId} from './domain/types';
 import {useMatchTimer} from './hooks/useMatchTimer';
-import {clearState,initialState,loadState,saveState,type StateRecovery} from './storage/state';
+import {clearState,initialState,loadState,resumePersistence,saveState,type StateRecovery} from './storage/state';
 import {formatNow,formatSessionDate} from './ui/presentation';
 
 const finishMatch=(session:Session,reason:FinishReason,now:number):Session=>{
@@ -158,6 +158,7 @@ export function App(){
   );
 
   const leaveRecoveryWith=(nextState:AppState)=>{
+    resumePersistence();
     setState(nextState);
     setRecovery(null);
   };
