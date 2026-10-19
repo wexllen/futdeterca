@@ -1,6 +1,6 @@
 import {DEFAULT_HEX,TEAM_IDS} from './kits.ts';
 import {newMatch} from './match.ts';
-import type {AppState,Session,Team,TeamId} from './types.ts';
+import type {AppState,Session,SessionParticipant,Team,TeamId} from './types.ts';
 
 const DEFAULT_PLAYERS:Record<TeamId,string[]>={
   'team-1':['Goleiro Azul','Jogador A1','Jogador A2','Jogador A3','Jogador A4','Jogador A5'],
@@ -11,21 +11,32 @@ const DEFAULT_PLAYERS:Record<TeamId,string[]>={
 const seedTeam=(id:TeamId):Team=>({
   id,
   hex:DEFAULT_HEX[id],
-  players:DEFAULT_PLAYERS[id].map((name,index)=>({
-    id:`${id}-${index}`,
-    name,
-    gk:index===0,
-    games:0,
-    wins:0,
-    goals:0,
-  })),
 });
+
+const seedParticipants=():SessionParticipant[]=>
+  TEAM_IDS.flatMap(teamId=>
+    DEFAULT_PLAYERS[teamId].map((name,index)=>({
+      id:`${teamId}-${index}`,
+      playerId:null,
+      name,
+      goalkeeper:index===0,
+      teamId,
+      slot:index,
+    }))
+  );
 
 export const defaultTeams=():Record<TeamId,Team>=>({
   'team-1':seedTeam('team-1'),
   'team-2':seedTeam('team-2'),
   'team-3':seedTeam('team-3'),
 });
+
+export const defaultParticipants=()=>seedParticipants();
+
+export const teamParticipants=(session:Session,teamId:TeamId)=>
+  session.participants
+    .filter(participant=>participant.teamId===teamId)
+    .sort((left,right)=>(left.slot??99)-(right.slot??99));
 
 
 export const localDateKey=(date:Date)=>{
@@ -42,6 +53,7 @@ export const createSession=(now:number):Session=>({
   finishedAt:null,
   status:'active',
   teams:defaultTeams(),
+  participants:defaultParticipants(),
   current:newMatch(),
   history:[],
 });
