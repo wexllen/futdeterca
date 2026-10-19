@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## Linha V0.8 em desenvolvimento — Schema V9
+## V0.8.0 — Schema V9
 
 Stack:
 - React
@@ -73,16 +73,20 @@ src/
 ├── components/
 │   ├── Court.tsx
 │   ├── HistoryPanel.tsx
+│   ├── RecoveryPanel.tsx
 │   ├── SessionLanding.tsx
 │   ├── SettingsPanel.tsx
-│   └── Teams.tsx
+│   ├── Teams.tsx
+│   └── WhatsAppImport.tsx
 ├── domain/
 │   ├── types.ts
 │   ├── kits.ts
 │   ├── match.ts
 │   ├── rotation.ts
 │   ├── session.ts
-│   └── statistics.ts
+│   ├── statistics.ts
+│   ├── whatsapp.ts
+│   └── whatsapp-import.ts
 ├── hooks/
 │   └── useMatchTimer.ts
 ├── storage/
@@ -115,7 +119,9 @@ Responsável por:
 - validar backups;
 - migrar V8 para V9;
 - manter a cadeia V7 → V8 → V9;
-- manter a mesma chave de `localStorage`.
+- manter a mesma chave de `localStorage`;
+- preservar raw pré-migração V7/V8;
+- bloquear persistência automática quando o estado existente não puder ser interpretado.
 
 ### Hooks
 
@@ -130,7 +136,9 @@ O hook não decide o vencedor nem encerra fisicamente a partida. A semântica de
 
 Os componentes maiores foram separados por responsabilidade visual:
 - `Court`: placar, controles e resultado da partida;
-- `Teams`: confronto inicial, coletes e jogadores da sessão;
+- `Teams`: confronto inicial, presença, coletes e composição da sessão;
+- `WhatsAppImport`: colagem, prévia e reconciliação da lista;
+- `RecoveryPanel`: recuperação segura de estado local ilegível/incompatível;
 - `HistoryPanel`: resumo e partidas por terça;
 - `SettingsPanel`: backup/importação e reset local;
 - `SessionLanding`: entrada quando não há terça ativa.
@@ -155,11 +163,9 @@ Ela não contém mais a implementação visual completa das telas.
 
 ## Nova terça
 
-Uma nova `Session` começa com a composição padrão da aplicação:
-- coletes Azul, Vermelho e Amarelo;
-- jogadores placeholder/default.
+Uma nova `Session` começa com os coletes padrão Azul, Vermelho e Amarelo e sem jogadores presentes.
 
-Ela não herda coletes nem jogadores da sessão anterior. Sessões encerradas permanecem preservadas para consulta histórica.
+Ela não herda coletes nem presença da sessão anterior. A presença pode ser preenchida manualmente ou pela importação revisada da lista do WhatsApp. Sessões encerradas permanecem preservadas para consulta histórica.
 
 ## Migrações V7 → V8 → V9
 
@@ -218,7 +224,11 @@ A suíte usa o test runner nativo do Node e cobre:
 - IDs neutros;
 - preservação de 12 partidas / 27 gols;
 - ciclo encerrar sessão → iniciar outra;
-- nova sessão com defaults sem alterar a sessão anterior.
+- nova sessão sem presença herdada e sem alterar a sessão anterior;
+- presença/alocação e duplicidade de participantes;
+- parser/importação do WhatsApp;
+- snapshots históricos e roundtrip V9;
+- recuperação segura de estado incompatível.
 
 O comando local consolidado é:
 
