@@ -1,4 +1,4 @@
-# CEFAS — V0.7.2
+# CEFAS — V0.7.3
 
 Aplicação local-first para operar e preservar o histórico da pelada de terça.
 
@@ -29,9 +29,12 @@ A V0.7 introduz sessões históricas:
 - local-first;
 - `localStorage`;
 - schema V8;
-- compatível com importação de backups V7.
+- compatível com importação de backups V7;
+- modo de recuperação quando os dados locais não podem ser interpretados.
 
-Backups V7 são migrados automaticamente para uma sessão V8. A sessão migrada permanece ativa até o operador encerrá-la explicitamente.
+Backups V7 são copiados para `terca-fc:state:backup-v7` antes da migração e então convertidos automaticamente para uma sessão V8. A sessão migrada permanece ativa até o operador encerrá-la explicitamente.
+
+Se o CEFAS encontrar JSON inválido ou estado incompatível na chave principal, ele **não sobrescreve o conteúdo com um estado vazio**. A persistência automática fica bloqueada, uma cópia de recuperação é tentada em `terca-fc:state:unreadable-<timestamp>` e o operador pode baixar os dados brutos, restaurar um backup válido ou apagar/recomeçar explicitamente.
 
 ## IDs de times
 
