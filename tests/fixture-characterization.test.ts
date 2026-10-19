@@ -83,7 +83,7 @@ test('timestamps historicos sao reconstruidos a partir dos eventos quando possiv
   assert.ok(session.startedAt>0);
 });
 
-test('uma sessao encerrada permanece e outra pode ser iniciada sem herdar coletes ou jogadores',()=>{
+test('uma sessao encerrada permanece e outra pode ser iniciada sem herdar coletes ou presença',()=>{
   const migrated=migrateV7(legacy,1_700_000_000_000);
   const current=activeSession(migrated);
   assert.ok(current);
@@ -113,9 +113,10 @@ test('uma sessao encerrada permanece e outra pode ser iniciada sem herdar colete
   assert.equal(newSession.teams['team-2'].hex,'#d8443d');
   assert.equal(newSession.teams['team-3'].hex,'#f4d03f');
 
-  assert.equal(teamParticipants(newSession,'team-1')[0].name,'Goleiro Azul');
-  assert.equal(teamParticipants(newSession,'team-2')[0].name,'Goleiro Vermelho');
-  assert.equal(teamParticipants(newSession,'team-3')[0].name,'Goleiro Amarelo');
+  assert.equal(newSession.participants.length,0);
+  assert.equal(teamParticipants(newSession,'team-1').length,0);
+  assert.equal(teamParticipants(newSession,'team-2').length,0);
+  assert.equal(teamParticipants(newSession,'team-3').length,0);
 
   assert.equal(next.sessions[0].teams['team-1'].hex.toLowerCase(),'#ff6a00');
   assert.equal(next.sessions[0].teams['team-2'].hex.toLowerCase(),'#ffffff');
