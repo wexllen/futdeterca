@@ -65,16 +65,30 @@ const migrateSession=(session:LegacyV8Session):Session=>({
 export const isLegacyV8=(value:unknown):value is LegacyV8State=>{
   if(!value||typeof value!=='object')return false;
   const candidate=value as LegacyV8State;
-  if(candidate.version!==8||!Array.isArray(candidate.sessions))return false;
+  if(
+    candidate.version!==8||
+    (candidate.activeSessionId!==null&&typeof candidate.activeSessionId!=='string')||
+    !Array.isArray(candidate.sessions)
+  )return false;
 
-  return candidate.sessions.every(session=>
+  const sessionsValid=candidate.sessions.every(session=>
     Boolean(
       session&&
+      typeof session.id==='string'&&
+      (session.status==='active'||session.status==='finished')&&
       session.teams&&
       TEAM_IDS.every(id=>Array.isArray(session.teams[id]?.players))&&
+      session.current&&
+      Array.isArray(session.current.events)&&
       Array.isArray(session.history)
     )
   );
+  if(!sessionsValid)return false;
+
+  const active=candidate.sessions.filter(session=>session.status==='active');
+  if(active.length>1)return false;
+  if(candidate.activeSessionId===null)return active.length===0;
+  return active.length===1&&active[0].id===candidate.activeSessionId;
 };
 
 export const migrateV8=(legacy:LegacyV8State):AppState=>{
