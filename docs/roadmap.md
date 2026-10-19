@@ -75,7 +75,7 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] alinhar documentação e implementação;
 - [x] manter testes/typecheck/build como quality gate.
 
-## PRÓXIMO — V0.8.0 — jogadores independentes dos coletes — Issue #9
+## V0.8.0 — jogadores independentes dos coletes — Issue #9 — concluído
 
 - [x] identidade persistente de `Player`;
 - [x] seleção de presentes por sessão;
@@ -83,7 +83,7 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] importação local da lista do WhatsApp com prévia/reconciliação;
 - [x] composição histórica por sessão;
 - [x] helper de histórico individual derivado;
-- [ ] integração final e release V0.8.0.
+- [x] integração final e release V0.8.0.
 
 ## P1 — V0.9.0 — empréstimos e goleiros — Issue #10
 
