@@ -1,6 +1,7 @@
-import {kitNameFromHex} from '../domain/kits.ts';
-import {defaultTeams,localDateKey} from '../domain/session.ts';
-import type {AppState,Match,MatchEvent,Session,Team,TeamId} from '../domain/types.ts';
+import {DEFAULT_HEX,kitNameFromHex} from '../domain/kits.ts';
+import {localDateKey} from '../domain/session.ts';
+import type {AppState,Match,MatchEvent,TeamId} from '../domain/types.ts';
+import {migrateV8,type LegacyV8State,type LegacyV8Team} from './legacy-v8.ts';
 
 export type LegacyTeamId='azul'|'verde'|'vermelho';
 
@@ -54,6 +55,12 @@ export const LEGACY_TO_TEAM_ID:Record<LegacyTeamId,TeamId>={
   azul:'team-1',
   verde:'team-2',
   vermelho:'team-3',
+};
+
+const LEGACY_DEFAULT_PLAYERS:Record<TeamId,string[]>={
+  'team-1':['Goleiro Azul','Jogador A1','Jogador A2','Jogador A3','Jogador A4','Jogador A5'],
+  'team-2':['Goleiro Vermelho','Jogador V1','Jogador V2','Jogador V3','Jogador V4','Jogador V5'],
+  'team-3':['Goleiro Amarelo','Jogador M1','Jogador M2','Jogador M3','Jogador M4','Jogador M5'],
 };
 
 const mapTeamId=(id:LegacyTeamId)=>LEGACY_TO_TEAM_ID[id];
