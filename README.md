@@ -2,6 +2,14 @@
 
 Aplicação local-first para operar e preservar o histórico da pelada de terça.
 
+## Status atual
+
+- **V0.8.0 publicada em produção** no GitHub Pages;
+- schema atual: **V9**;
+- CI e deploy da release concluídos com sucesso;
+- próxima etapa: **validação em quadra / hardening pós-release** — Issue #35;
+- próximo marco funcional planejado, após essa validação: **V0.9.0 — empréstimos e goleiros** — Issue #10.
+
 ## Regras principais
 
 - 3 times por sessão, identificados pelo colete.
@@ -118,7 +126,7 @@ npm run dev
 
 ## Deploy
 
-GitHub Actions verifica testes, typecheck e build antes da publicação no GitHub Pages.
+GitHub Actions verifica testes, typecheck e build em pull requests para `main`. A publicação no GitHub Pages ocorre somente em `push` para `main`; execução manual do workflow não publica uma branch arbitrária.
 
 ## Limitação intencional
 
