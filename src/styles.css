@@ -52,3 +52,17 @@
   .session-switcher button{min-width:132px}
   .expired-note,.session-warning{margin:0 12px 12px}
 }
+
+
+/* v0.7.2 — classificação da terça */
+.history-summary-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.history-summary-head .history-summary-team{margin-bottom:11px}
+.history-rank{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.history-rank span{font-size:18px;line-height:1}
+.history-rank strong{font:600 14px/1 'Oswald';color:#555}
+@media(max-width:700px){
+  .history-summary-head{gap:5px}
+  .history-rank{gap:2px}
+  .history-rank span{font-size:15px}
+  .history-rank strong{font-size:12px}
+}

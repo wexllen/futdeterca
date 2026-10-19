@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {migrateV7,type LegacyV7State} from '../src/storage/migrations.ts';
 import {activeSession,endSession,startSession} from '../src/domain/session.ts';
-import {teamStats,totalGoals} from '../src/domain/statistics.ts';
+import {rankTeams,teamStats,totalGoals} from '../src/domain/statistics.ts';
 
 const legacy=JSON.parse(
   readFileSync(new URL('./fixtures/cefas-v7-real.json',import.meta.url),'utf8'),
@@ -20,6 +20,14 @@ test('backup real V7 migra para V8 preservando fatos observados',()=>{
   assert.deepEqual(teamStats(session.history,'team-1'),{games:8,wins:4,losses:4,goals:10});
   assert.deepEqual(teamStats(session.history,'team-2'),{games:9,wins:6,losses:3,goals:12});
   assert.deepEqual(teamStats(session.history,'team-3'),{games:7,wins:2,losses:5,goals:5});
+  assert.deepEqual(
+    rankTeams(session.history,['team-1','team-2','team-3']).map(entry=>({team:entry.team,position:entry.position,wins:entry.stats.wins})),
+    [
+      {team:'team-2',position:1,wins:6},
+      {team:'team-1',position:2,wins:4},
+      {team:'team-3',position:3,wins:2},
+    ],
+  );
 });
 
 test('migracao V7 troca ids legados por ids neutros e preserva coletes',()=>{
