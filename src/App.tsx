@@ -181,7 +181,7 @@ export function App(){
   return <div className="app">
     <header>
       <div><div className="eyebrow">{formatNow(now)}</div><h1>CEFAS</h1></div>
-      <div className="live"><span/>LOCAL FIRST · V0.7.3</div>
+      <div className="live"><span/>LOCAL FIRST · V0.8.0</div>
     </header>
 
     <main>
