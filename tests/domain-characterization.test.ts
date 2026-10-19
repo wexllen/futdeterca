@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {expireMatch,newMatch,resolveCompetitiveResult,scoreGoal} from '../src/domain/match.ts';
 import {nextRotation} from '../src/domain/rotation.ts';
-import {teamStats} from '../src/domain/statistics.ts';
+import {rankTeams,teamStats} from '../src/domain/statistics.ts';
 
 const base={
   defender:'team-1' as const,
@@ -63,4 +63,74 @@ test('gol depois de 00:00 continua sendo registrado',()=>{
   assert.equal(scored.sd,1);
   assert.equal(scored.events.at(-1)?.type,'gol');
   assert.equal(scored.events.at(-1)?.team,'team-1');
+});
+
+
+test('classificacao ordena por vitorias e compartilha posicao em empate',()=>{
+  const first={...newMatch(),...base,status:'finished' as const,winner:'team-1' as const};
+  const second={
+    ...newMatch(),
+    defender:'team-2' as const,
+    challenger:'team-3' as const,
+    waiting:'team-1' as const,
+    status:'finished' as const,
+    winner:'team-2' as const,
+  };
+  const third={
+    ...newMatch(),
+    defender:'team-1' as const,
+    challenger:'team-3' as const,
+    waiting:'team-2' as const,
+    status:'finished' as const,
+    winner:'team-3' as const,
+  };
+
+  assert.deepEqual(
+    rankTeams([first,second,third],['team-1','team-2','team-3']).map(entry=>({
+      team:entry.team,
+      position:entry.position,
+      wins:entry.stats.wins,
+    })),
+    [
+      {team:'team-1',position:1,wins:1},
+      {team:'team-2',position:1,wins:1},
+      {team:'team-3',position:1,wins:1},
+    ],
+  );
+});
+
+test('classificacao usa ranking de competicao sem desempate artificial',()=>{
+  const history=[
+    {...newMatch(),...base,status:'finished' as const,winner:'team-1' as const},
+    {...newMatch(),...base,status:'finished' as const,winner:'team-1' as const},
+    {
+      ...newMatch(),
+      defender:'team-2' as const,
+      challenger:'team-3' as const,
+      waiting:'team-1' as const,
+      status:'finished' as const,
+      winner:'team-2' as const,
+    },
+    {
+      ...newMatch(),
+      defender:'team-2' as const,
+      challenger:'team-3' as const,
+      waiting:'team-1' as const,
+      status:'finished' as const,
+      winner:'team-2' as const,
+    },
+  ];
+
+  assert.deepEqual(
+    rankTeams(history,['team-1','team-2','team-3']).map(entry=>({
+      team:entry.team,
+      position:entry.position,
+      wins:entry.stats.wins,
+    })),
+    [
+      {team:'team-1',position:1,wins:2},
+      {team:'team-2',position:1,wins:2},
+      {team:'team-3',position:3,wins:0},
+    ],
+  );
 });
