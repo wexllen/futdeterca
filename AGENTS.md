@@ -12,7 +12,7 @@ Antes de alterar regras de negócio, leia:
 
 ## Estado atual
 
-A versão atual é V0.8.0, com schema V9, `Player` persistente separado de `SessionParticipant`, presença por sessão, composição manual e importação local da lista do WhatsApp. Backups V8 e V7 continuam aceitos por migração explícita. A persistência usa `localStorage` na chave `terca-fc:state` e protege o raw original quando um estado não pode ser interpretado.
+A versão estável publicada é V0.8.0, com schema V9, `Player` persistente separado de `SessionParticipant`, presença por sessão, composição manual e importação local da lista do WhatsApp. Backups V8 e V7 continuam aceitos por migração explícita. A persistência usa `localStorage` na chave `terca-fc:state` e protege o raw original quando um estado não pode ser interpretado. A etapa atual é a validação em quadra/hardening da Issue #35; V0.9 / Issue #10 é o próximo domínio, não deve ser antecipado antes dessa validação.
 
 Stack atual:
 - React
