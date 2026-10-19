@@ -96,6 +96,14 @@ export const applyImportPreview=(
       if(selected){
         player=players.find(candidate=>candidate.id===selected);
       }
+
+      if(!player){
+        const createdDuringImport=players.filter(candidate=>nameKey(candidate.name)===nameKey(row.entry.name));
+        if(createdDuringImport.length===1){
+          player=createdDuringImport[0];
+        }
+      }
+
       if(!player){
         player={
           id:idFactory(),
