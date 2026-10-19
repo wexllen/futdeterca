@@ -88,6 +88,20 @@ J/V/D/G devem ser derivados do histórico da sessão sempre que possível.
 
 Não manter contadores independentes como fonte concorrente de verdade se a informação puder ser reconstruída das partidas/eventos.
 
+## Classificação da terça
+
+O resumo da terça no Histórico é uma classificação derivada exclusivamente da quantidade de vitórias.
+
+Regras:
+- ordenar os três times por vitórias, em ordem decrescente;
+- manter J/V/D/G visíveis;
+- times com a mesma quantidade de vitórias compartilham a mesma colocação;
+- usar ranking de competição, portanto 1º/1º/3º quando houver empate no topo;
+- não usar saldo de gols, gols marcados, aproveitamento ou confronto direto como desempate;
+- enquanto nenhuma partida tiver sido encerrada, não exibir medalhas nem colocação.
+
+A classificação não altera a ordem cronológica das partidas exibidas abaixo.
+
 ## Coletes
 
 No produto atual, colete é a identidade operacional suficiente do time.
