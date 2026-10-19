@@ -40,10 +40,10 @@ export function SettingsPanel({state,setState}:{state:AppState;setState:React.Di
   };
 
   return <section>
-    <div className="section-title"><div className="eyebrow">LOCAL FIRST · SCHEMA V8</div><h2>Dados e backup</h2></div>
+    <div className="section-title"><div className="eyebrow">LOCAL FIRST · SCHEMA V9</div><h2>Dados e backup</h2></div>
     <div className="settings-card">
       <h3>Suas terças ficam neste navegador</h3>
-      <p>O backup V8 contém todas as sessões. Backups V7 continuam aceitos e são migrados automaticamente.</p>
+      <p>O backup V9 contém jogadores e todas as sessões. Backups V8 e V7 continuam aceitos e são migrados automaticamente.</p>
       <div className="settings-actions">
         <button onClick={exp}><Download/>Baixar backup</button>
         <label><Upload/>Restaurar backup<input hidden type="file" accept="application/json" onChange={imp}/></label>
