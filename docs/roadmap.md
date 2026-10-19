@@ -75,6 +75,14 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] alinhar documentação e implementação;
 - [x] manter testes/typecheck/build como quality gate.
 
+## PATCH — V0.7.3 — proteção contra perda silenciosa — Issue #26 — concluído
+
+- [x] impedir sobrescrita automática de estado local ilegível/incompatível;
+- [x] preservar raw antes de recuperação destrutiva;
+- [x] bloquear persistência durante modo de recuperação;
+- [x] criar backup bruto antes das migrações relevantes;
+- [x] oferecer recuperação/exportação explícita.
+
 ## V0.8.0 — jogadores independentes dos coletes — Issue #9 — concluído
 
 - [x] identidade persistente de `Player`;
@@ -84,6 +92,15 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] composição histórica por sessão;
 - [x] helper de histórico individual derivado;
 - [x] integração final e release V0.8.0.
+
+## AGORA — V0.8.1 — validação em quadra e hardening pós-release — Issue #35
+
+- [ ] validar V0.8.0 em uso real;
+- [ ] testar importação da lista real do WhatsApp;
+- [ ] testar composição manual dos três coletes em quadra;
+- [ ] confirmar persistência/histórico/backup V9 após a terça;
+- [ ] registrar atritos e bugs observados como issues pequenas;
+- [ ] decidir se haverá patch V0.8.1 ou avanço direto para V0.9.0.
 
 ## P1 — V0.9.0 — empréstimos e goleiros — Issue #10
 
