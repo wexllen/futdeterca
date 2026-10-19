@@ -124,3 +124,17 @@ test('jogador já presente não é duplicado ao importar novamente',()=>{
   const twice=applyImportPreview(once,secondRows,[],1234,()=> 'part-2');
   assert.equal(twice.sessions[0].participants.length,1);
 });
+
+
+test('nome repetido na mesma lista não cria duas identidades persistentes',()=>{
+  const state=baseState();
+  const parsed=parseWhatsAppList('Jogadores\n1 - Will\n2 - Will');
+  const rows=buildImportPreview(state.players,state.sessions[0],parsed);
+  let seq=0;
+
+  const next=applyImportPreview(state,rows,[],1234,()=>`id-${++seq}`);
+
+  assert.equal(next.players.length,1);
+  assert.equal(next.sessions[0].participants.length,1);
+  assert.equal(next.sessions[0].participants[0].playerId,next.players[0].id);
+});
