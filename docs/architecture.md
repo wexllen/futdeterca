@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## Versão atual — V0.7.2
+## Versão atual — V0.7.3
 
 Stack:
 - React
@@ -16,6 +16,8 @@ Persistência:
 - chave: `terca-fc:state`
 - schema atual: V8
 - leitura compatível com backup V7
+- backup pré-migração V7 em `terca-fc:state:backup-v7`
+- cópia de recuperação em `terca-fc:state:unreadable-<timestamp>` quando um estado não pode ser interpretado
 
 ## Modelo V8
 
@@ -52,6 +54,7 @@ src/
 ├── components/
 │   ├── Court.tsx
 │   ├── HistoryPanel.tsx
+│   ├── RecoveryPanel.tsx
 │   ├── SessionLanding.tsx
 │   ├── SettingsPanel.tsx
 │   └── Teams.tsx
@@ -93,7 +96,16 @@ Responsável por:
 - carregar/salvar V8;
 - validar backups;
 - migrar V7 para V8;
-- manter a mesma chave de `localStorage`.
+- manter a mesma chave de `localStorage`;
+- impedir escrita automática depois de uma falha de leitura;
+- preservar o raw original para recuperação;
+- criar uma cópia única do V7 antes de migrá-lo.
+
+Regra de integridade:
+
+> O CEFAS pode deixar de entender os dados, mas nunca pode destruí-los porque deixou de entendê-los.
+
+Se o conteúdo principal não puder ser interpretado, `loadState` entra em modo de recuperação. O estado vazio usado apenas para renderização não pode ser salvo sobre a chave principal. A persistência só é retomada depois de uma ação explícita do operador: restaurar um backup válido ou apagar/recomeçar.
 
 ### Hooks
 
@@ -110,6 +122,7 @@ Os componentes maiores foram separados por responsabilidade visual:
 - `Court`: placar, controles e resultado da partida;
 - `Teams`: confronto inicial, coletes e jogadores da sessão;
 - `HistoryPanel`: resumo e partidas por terça;
+- `RecoveryPanel`: bloqueio seguro quando o estado local não pode ser lido, com exportação bruta/restauração;
 - `SettingsPanel`: backup/importação e reset local;
 - `SessionLanding`: entrada quando não há terça ativa.
 
@@ -188,7 +201,10 @@ A suíte usa o test runner nativo do Node e cobre:
 - IDs neutros;
 - preservação de 12 partidas / 27 gols;
 - ciclo encerrar sessão → iniciar outra;
-- nova sessão com defaults sem alterar a sessão anterior.
+- nova sessão com defaults sem alterar a sessão anterior;
+- estado local inválido não sendo sobrescrito;
+- bloqueio de persistência durante recuperação;
+- backup V7 criado antes da migração.
 
 O comando local consolidado é:
 
