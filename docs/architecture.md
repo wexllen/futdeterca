@@ -247,3 +247,28 @@ A ausência dessas ferramentas não deve ser interpretada como proibição futur
 ## Princípio de evolução
 
 A modularização deve reduzir raio de impacto e facilitar as próximas capacidades do domínio. Não criar camadas genéricas, abstrações ou serviços sem requisito concreto.
+
+
+## Presença e composição manual — linha V0.8
+
+Uma nova sessão V9 começa sem jogadores presentes. O cadastro persistente vive em `AppState.players`; participar de uma terça cria um `SessionParticipant` com snapshot de nome/goleiro e vínculo opcional por `playerId`.
+
+Fluxo operacional:
+
+```text
+Player cadastrado
+  ↓ adicionar à terça
+SessionParticipant
+  ↓ disponível
+alocação em teamId + slot
+  ↓
+colete da noite
+```
+
+Regras:
+- remover do colete apenas zera `teamId` e `slot`, devolvendo o participante aos disponíveis;
+- remover da terça remove o `SessionParticipant`, mas preserva o `Player` persistente;
+- um slot aceita no máximo um participante;
+- o mesmo participante é movido, nunca duplicado, entre coletes;
+- a vaga GK prioriza goleiros na apresentação, sem impedir ajuste manual;
+- sessões legadas preservam seus snapshots; somente novas sessões começam vazias.
