@@ -77,10 +77,20 @@ export const applyImportPreview=(
     if(row.status==='existing'){
       player=row.candidates[0];
     }else if(row.status==='ambiguous'){
+      if(!decisionMap.has(row.id))continue;
       const selected=decisionMap.get(row.id);
-      if(!selected)continue;
-      player=players.find(candidate=>candidate.id===selected);
-      if(!player)continue;
+      if(selected){
+        player=players.find(candidate=>candidate.id===selected);
+        if(!player)continue;
+      }else{
+        player={
+          id:idFactory(),
+          name:row.entry.name.trim(),
+          goalkeeper:row.entry.goalkeeper,
+          createdAt:now,
+        };
+        players.push(player);
+      }
     }else{
       const selected=decisionMap.get(row.id);
       if(selected){
