@@ -193,7 +193,7 @@ export function App(){
 
       {tab==='times'&&(
         active
-          ?<Teams session={active} setState={setState}/>
+          ?<Teams state={state} session={active} setState={setState}/>
           :<SessionLanding sessions={sessions} onStart={beginTuesday}/>
       )}
 
