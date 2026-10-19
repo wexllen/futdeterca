@@ -33,7 +33,7 @@ export const isPlayerPresent=(session:Session,playerId:string)=>
 export const addPlayerToSession=(
   session:Session,
   player:Player,
-  participantId=crypto.randomUUID(),
+  participantId:string=crypto.randomUUID(),
 ):Session=>{
   if(isPlayerPresent(session,player.id))return session;
 
