@@ -12,7 +12,7 @@ Antes de alterar regras de negócio, leia:
 
 ## Estado atual
 
-A linha V0.7 usa schema V8 com `Session[]` e mantém leitura de backups V7. A persistência usa `localStorage` na chave `terca-fc:state`.
+A versão atual é V0.7.2, ainda na linha V0.7, usando schema V8 com `Session[]` e mantendo leitura de backups V7. A persistência usa `localStorage` na chave `terca-fc:state`.
 
 Stack atual:
 - React
