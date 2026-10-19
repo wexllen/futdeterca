@@ -53,7 +53,7 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] preservar intacta a sessão anterior no histórico;
 - [x] cobrir o cenário com o backup real V7.
 
-## PRÓXIMO — V0.7.2 — classificação da terça — Issue #19
+## PATCH — V0.7.2 — classificação da terça — Issue #19 — concluído
 
 - [x] ordenar os três times por quantidade de vitórias;
 - [x] exibir 🥇🥈🥉/posição no resumo do Histórico;
@@ -75,7 +75,7 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [x] alinhar documentação e implementação;
 - [x] manter testes/typecheck/build como quality gate.
 
-## P1 — V0.8.0 — jogadores independentes dos coletes — Issue #9
+## PRÓXIMO — V0.8.0 — jogadores independentes dos coletes — Issue #9
 
 - [ ] identidade persistente de `Player`;
 - [ ] seleção de presentes por sessão;
