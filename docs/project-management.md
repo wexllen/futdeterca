@@ -15,8 +15,10 @@ O backlog vivo está em GitHub Issues. Cada marco funcional possui uma issue agr
 | V0.7.1 — nova terça limpa | #17 | Concluído |
 | V0.7.x — consolidação arquitetural | #8 | Concluído |
 | V0.7.2 — classificação da terça | #19 | Concluído |
-| V0.8.0 — jogadores independentes | #9 | Concluído |
-| V0.9.0 — empréstimos e goleiros | #10 | Planejado |
+| V0.7.3 — proteção de persistência | #26 | Concluído |
+| V0.8.0 — jogadores independentes | #9 | Publicado |
+| V0.8.1 — validação em quadra / hardening | #35 | Atual |
+| V0.9.0 — empréstimos e goleiros | #10 | Próximo |
 | V0.10.0 — eventos individuais | #11 | Planejado |
 | V0.11.0 — dashboard e estatísticas | #12 | Planejado |
 | V0.12.0 — sorteio automático | #13 | Planejado |
@@ -76,6 +78,14 @@ O Histórico passa a classificar os três times por vitórias, com medalhas/posi
 Issue: https://github.com/wexllen/futdeterca/issues/9
 
 Introduz identidade persistente de jogador, presença por sessão, composição manual dos coletes, importação local da lista do WhatsApp com prévia/reconciliação e snapshots históricos.
+
+## Etapa atual
+
+### V0.8.1 — validação em quadra e hardening pós-release
+
+Issue: https://github.com/wexllen/futdeterca/issues/35
+
+Objetivo: usar a V0.8.0 publicada numa terça real, observar fricção operacional e corrigir apenas problemas comprovados antes do próximo domínio.
 
 ## Próximo marco funcional
 
