@@ -52,7 +52,7 @@ test('confirmar importação reutiliza existente e cria somente os novos',()=>{
   const rows=buildImportPreview(state.players,state.sessions[0],parsed);
   let seq=0;
 
-  const next=applyImportPreview(state,rows,[],1234,()=>\`id-\${++seq}\`);
+  const next=applyImportPreview(state,rows,[],1234,()=>`id-${++seq}`);
 
   assert.equal(next.players.length,2);
   assert.deepEqual(next.players.map(player=>player.name),['Will','Helo']);
@@ -81,6 +81,17 @@ test('nome ambíguo só entra após decisão explícita',()=>{
   );
   assert.equal(chosen.sessions[0].participants.length,1);
   assert.equal(chosen.sessions[0].participants[0].playerId,'p2');
+
+  const created=applyImportPreview(
+    state,
+    rows,
+    [{rowId:rows[0].id,playerId:null}],
+    1234,
+    ()=> 'new-id',
+  );
+  assert.equal(created.players.length,3);
+  assert.equal(created.sessions[0].participants[0].name,'Alex');
+  assert.equal(created.sessions[0].participants[0].playerId,'new-id');
 });
 
 test('goleiro importado vira goleiro no snapshot sem reescrever cadastro existente',()=>{
