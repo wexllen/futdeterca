@@ -298,3 +298,33 @@ O parser:
 - remove artefatos comuns de menção e caracteres invisíveis;
 - extrai opcionalmente data, hora e local apenas como metadados;
 - não altera `Session`, `Player` ou presença.
+
+
+## Importação + prévia + reconciliação — linha V0.8
+
+O parser não altera o estado diretamente. A importação possui uma etapa explícita de prévia e reconciliação antes de qualquer presença ser criada.
+
+Fluxo:
+
+```text
+colar mensagem
+  ↓
+parseWhatsAppList
+  ↓
+prévia
+  ↓
+reconciliação de nomes
+  ↓
+confirmar
+  ↓
+Player / SessionParticipant
+```
+
+Regras:
+- correspondência exata e inequívoca por nome reutiliza o `Player` existente;
+- mais de um cadastro com o mesmo nome exige escolha explícita ou cadastro de uma nova identidade;
+- nome sem correspondência cria um novo `Player` somente na confirmação;
+- jogador já presente não é duplicado;
+- nome repetido na mesma lista não cria identidades duplicadas;
+- indicação de goleiro importada vale para o snapshot da terça, sem reescrever silenciosamente o cadastro persistente;
+- data, hora e local encontrados são apenas informativos na prévia e não sobrescrevem a `Session`.

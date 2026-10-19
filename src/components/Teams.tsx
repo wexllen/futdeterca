@@ -16,6 +16,7 @@ import {
 } from '../domain/session';
 import type {AppState,Player,Session,SessionParticipant,Team,TeamId,TeamStats} from '../domain/types';
 import {formatSessionDate,teamName,teamStyle} from '../ui/presentation';
+import {WhatsAppImport} from './WhatsAppImport';
 
 function InitialMatchSelector({session,setSession}:{session:Session;setSession:(update:(session:Session)=>Session)=>void}){
   const locked=session.history.length>0||session.current.status!=='ready';
@@ -279,7 +280,10 @@ export function Teams({state,session,setState}:{state:AppState;session:Session;s
 
   return <section>
     <div className="section-title"><div><div className="eyebrow">{formatSessionDate(session.date)}</div><h2>3 times · até 6 jogadores</h2></div></div>
-    <PresenceTray session={session} players={state.players} setState={setState}/>
+    <div className="presence-tools">
+      <PresenceTray session={session} players={state.players} setState={setState}/>
+      <WhatsAppImport state={state} session={session} setState={setState}/>
+    </div>
     <InitialMatchSelector session={session} setSession={setSession}/>
     <div className="teams-grid">
       {TEAM_IDS.map(id=>

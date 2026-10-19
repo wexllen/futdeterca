@@ -123,3 +123,36 @@
   .presence-add{grid-template-columns:1fr}.presence-row{grid-template-columns:10px minmax(0,1fr) auto 30px}.presence-row em{grid-column:2/4;font-size:9px}
   .player-picker-backdrop{padding:0;align-items:flex-end}.player-picker{border-radius:14px 14px 0 0;max-height:80vh;padding:20px 16px 24px}
 }
+
+
+/* v0.8.0 — importação do WhatsApp */
+.presence-tools{display:grid;gap:10px;margin-bottom:18px}.presence-tools .presence-card{margin-bottom:0}
+.whatsapp-import-trigger{justify-self:start;border:1px solid #cfcac0;background:#fff;padding:10px 13px;display:flex;align-items:center;gap:7px;font-weight:700;cursor:pointer}
+.whatsapp-import-trigger svg{width:16px}
+.whatsapp-import-backdrop{position:fixed;inset:0;z-index:50;background:#0008;display:grid;place-items:center;padding:18px}
+.whatsapp-import-modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-top:3px solid #111;padding:20px}
+.whatsapp-import-head{display:flex;justify-content:space-between;gap:12px;align-items:start;margin-bottom:14px}
+.whatsapp-import-head h3{font:600 28px 'Oswald';text-transform:uppercase}
+.whatsapp-import-head>button{border:0;background:transparent;padding:4px;cursor:pointer}.whatsapp-import-head svg{width:20px}
+.whatsapp-import-modal>p{font-size:12px;color:#666;line-height:1.45;margin-bottom:12px}
+.whatsapp-import-modal textarea{width:100%;resize:vertical;border:1px solid #cbc8bf;padding:12px;min-height:220px;line-height:1.45}
+.whatsapp-import-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.whatsapp-import-actions button{border:0;background:#111;color:#fff;padding:10px 14px;font-weight:700;cursor:pointer}
+.whatsapp-import-actions button.secondary{background:#fff;color:#111;border:1px solid #cfcac0}
+.whatsapp-import-actions button:disabled{opacity:.4;cursor:not-allowed}
+.whatsapp-preview-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+.whatsapp-preview-summary>div{background:#f5f3ee;padding:12px;text-align:center}.whatsapp-preview-summary b{display:block;font:700 24px 'Oswald'}.whatsapp-preview-summary span{font-size:9px;text-transform:uppercase;color:#777;font-weight:700}
+.whatsapp-preview-meta{display:flex;flex-wrap:wrap;gap:8px 14px;padding:12px;background:#f7f5f0;border:1px solid #e0ddd4;margin-bottom:12px}
+.whatsapp-preview-meta small{width:100%;font-size:9px}.whatsapp-preview-meta span{font-size:11px;color:#666}
+.whatsapp-preview-list{display:grid;gap:6px}.whatsapp-preview-row{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(150px,220px);gap:10px;align-items:center;border:1px solid #e2dfd7;padding:10px}
+.whatsapp-preview-role{font-size:9px;font-weight:800;color:#777}.whatsapp-preview-role.goalkeeper{color:#111}
+.whatsapp-preview-row strong{display:block;font-size:13px}.whatsapp-preview-row small{display:block;margin-top:3px;font-size:9px;color:#777}
+.whatsapp-preview-row select{border:1px solid #cbc8bf;background:#fff;padding:8px;min-width:0}
+.whatsapp-preview-empty{padding:18px;background:#f7f5f0;color:#777;font-size:12px}
+.whatsapp-preview-ignored{display:grid;gap:4px;margin-top:12px;padding:10px;background:#fff7e7;border:1px solid #ead4a2}.whatsapp-preview-ignored small{font-size:9px}.whatsapp-preview-ignored code{font-size:10px;white-space:pre-wrap}
+.whatsapp-preview-warning{margin-top:12px!important;color:#8a5a00!important;font-weight:700}
+@media(max-width:700px){
+  .whatsapp-import-backdrop{padding:0;align-items:end}.whatsapp-import-modal{max-height:92vh;border-radius:14px 14px 0 0;padding:18px 14px 24px}
+  .whatsapp-preview-row{grid-template-columns:36px minmax(0,1fr)}.whatsapp-preview-row select{grid-column:2}
+  .whatsapp-import-actions{position:sticky;bottom:-24px;background:#fff;padding:12px 0 0}
+}
