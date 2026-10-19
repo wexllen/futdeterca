@@ -1,24 +1,10 @@
 import {DEFAULT_HEX,TEAM_IDS} from './kits.ts';
 import {newMatch} from './match.ts';
-import type {AppState,Session,Team,TeamId} from './types.ts';
-
-const DEFAULT_PLAYERS:Record<TeamId,string[]>={
-  'team-1':['Goleiro Azul','Jogador A1','Jogador A2','Jogador A3','Jogador A4','Jogador A5'],
-  'team-2':['Goleiro Vermelho','Jogador V1','Jogador V2','Jogador V3','Jogador V4','Jogador V5'],
-  'team-3':['Goleiro Amarelo','Jogador M1','Jogador M2','Jogador M3','Jogador M4','Jogador M5'],
-};
+import type {AppState,Player,Session,SessionParticipant,Team,TeamId} from './types.ts';
 
 const seedTeam=(id:TeamId):Team=>({
   id,
   hex:DEFAULT_HEX[id],
-  players:DEFAULT_PLAYERS[id].map((name,index)=>({
-    id:`${id}-${index}`,
-    name,
-    gk:index===0,
-    games:0,
-    wins:0,
-    goals:0,
-  })),
 });
 
 export const defaultTeams=():Record<TeamId,Team>=>({
@@ -27,6 +13,78 @@ export const defaultTeams=():Record<TeamId,Team>=>({
   'team-3':seedTeam('team-3'),
 });
 
+export const teamParticipants=(session:Session,teamId:TeamId)=>
+  session.participants
+    .filter(participant=>participant.teamId===teamId)
+    .sort((left,right)=>(left.slot??99)-(right.slot??99));
+
+export const availableParticipants=(session:Session)=>
+  session.participants.filter(participant=>participant.teamId===null);
+
+export const participationCounts=(session:Session)=>{
+  const present=session.participants.length;
+  const assigned=session.participants.filter(participant=>participant.teamId!==null).length;
+  return {present,assigned,available:present-assigned};
+};
+
+export const isPlayerPresent=(session:Session,playerId:string)=>
+  session.participants.some(participant=>participant.playerId===playerId);
+
+export const addPlayerToSession=(
+  session:Session,
+  player:Player,
+  participantId:string=crypto.randomUUID(),
+):Session=>{
+  if(isPlayerPresent(session,player.id))return session;
+
+  const participant:SessionParticipant={
+    id:participantId,
+    playerId:player.id,
+    name:player.name,
+    goalkeeper:player.goalkeeper,
+    teamId:null,
+    slot:null,
+  };
+
+  return {...session,participants:[...session.participants,participant]};
+};
+
+export const removeParticipant=(session:Session,participantId:string):Session=>{
+  const participants=session.participants.filter(participant=>participant.id!==participantId);
+  return participants.length===session.participants.length?session:{...session,participants};
+};
+
+export const assignParticipant=(
+  session:Session,
+  participantId:string,
+  teamId:TeamId,
+  slot:number,
+):Session=>{
+  if(!Number.isInteger(slot)||slot<0||slot>5)return session;
+  if(session.participants.some(participant=>
+    participant.id!==participantId&&participant.teamId===teamId&&participant.slot===slot
+  ))return session;
+
+  let changed=false;
+  const participants=session.participants.map(participant=>{
+    if(participant.id!==participantId)return participant;
+    if(participant.teamId===teamId&&participant.slot===slot)return participant;
+    changed=true;
+    return {...participant,teamId,slot};
+  });
+
+  return changed?{...session,participants}:session;
+};
+
+export const unassignParticipant=(session:Session,participantId:string):Session=>{
+  let changed=false;
+  const participants=session.participants.map(participant=>{
+    if(participant.id!==participantId||participant.teamId===null)return participant;
+    changed=true;
+    return {...participant,teamId:null,slot:null};
+  });
+  return changed?{...session,participants}:session;
+};
 
 export const localDateKey=(date:Date)=>{
   const year=date.getFullYear();
@@ -42,6 +100,7 @@ export const createSession=(now:number):Session=>({
   finishedAt:null,
   status:'active',
   teams:defaultTeams(),
+  participants:[],
   current:newMatch(),
   history:[],
 });
@@ -63,6 +122,38 @@ export const updateActiveSession=(
     return update(session);
   });
   return changed?{...state,sessions}:state;
+};
+
+export const addExistingPlayerToActiveSession=(state:AppState,playerId:string):AppState=>{
+  const player=state.players.find(item=>item.id===playerId);
+  if(!player)return state;
+  return updateActiveSession(state,session=>addPlayerToSession(session,player));
+};
+
+export const createPlayerForActiveSession=(
+  state:AppState,
+  name:string,
+  goalkeeper:boolean,
+  now:number,
+):AppState=>{
+  if(!activeSession(state))return state;
+  const normalized=name.trim();
+  if(!normalized)return state;
+
+  const existing=state.players.find(player=>
+    player.name.trim().localeCompare(normalized,undefined,{sensitivity:'accent'})===0
+  );
+  if(existing)return addExistingPlayerToActiveSession(state,existing.id);
+
+  const player:Player={
+    id:crypto.randomUUID(),
+    name:normalized,
+    goalkeeper,
+    createdAt:now,
+  };
+
+  const withPlayer={...state,players:[...state.players,player]};
+  return addExistingPlayerToActiveSession(withPlayer,player.id);
 };
 
 export const startSession=(state:AppState,now:number):AppState=>{
