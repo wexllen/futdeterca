@@ -119,16 +119,21 @@ A opção de cor customizada pode existir, com rótulo derivado automaticamente.
 
 A mesma cor não deve ser usada simultaneamente por dois times na mesma noite.
 
-## Jogadores — regra observada, ainda não modelada
+## Jogadores — V0.8.0
 
-Jogadores devem evoluir para entidades independentes dos coletes.
+Jogador é uma identidade persistente independente do colete.
 
-Na prática:
-- um jogador pode atuar temporariamente por outro time;
-- quando falta jogador, o time perdedor pode ceder um jogador ao time incompleto, em rotação;
-- quando falta goleiro, o goleiro do time perdedor pode alternar entre o time desafiante e o próximo time.
+Cada terça possui sua própria lista de participantes. A presença e a alocação daquela noite são registradas em `SessionParticipant`, preservando nome, indicação de goleiro, colete e vaga como snapshot histórico.
 
-Esses empréstimos são participações temporárias e não devem mudar permanentemente a identidade do jogador.
+Regras:
+- adicionar um jogador à terça não o vincula permanentemente a um colete;
+- remover do colete apenas o devolve aos disponíveis;
+- remover da terça não apaga sua identidade persistente;
+- o mesmo jogador não pode ocupar dois coletes simultaneamente no fluxo normal;
+- alterações futuras no cadastro persistente não reescrevem sessões encerradas;
+- dados legados podem preservar `playerId: null` quando a identidade não pode ser inferida com segurança.
+
+Empréstimos entre times e rotação/alternância de goleiros continuam planejados para V0.9 e não fazem parte da V0.8.
 
 ## Sessões/Terças — V0.7.0
 
@@ -145,11 +150,12 @@ Encerrar uma terça arquiva a sessão. Iniciar outra não apaga as anteriores. O
 
 Uma nova terça começa como uma nova composição operacional:
 - não herda as cores dos coletes da sessão anterior;
-- não herda os jogadores da sessão anterior;
+- não herda presença da sessão anterior;
 - usa os coletes padrão Azul, Vermelho e Amarelo;
-- usa os jogadores placeholder/default até que a composição daquela sessão seja editada.
+- começa sem jogadores presentes;
+- permite preencher a presença manualmente ou pela importação revisada da lista do WhatsApp.
 
-As sessões encerradas preservam integralmente seus próprios coletes e jogadores históricos.
+As sessões encerradas preservam integralmente seus próprios coletes, participantes e partidas.
 
 ## Eventos individuais — planejado
 
@@ -160,3 +166,18 @@ O evento de gol deve poder evoluir para conter, opcionalmente:
 - participação como emprestado.
 
 O registro do gol no placar deve continuar imediato, mesmo se esses metadados forem ignorados.
+
+
+## Importação da lista do WhatsApp — V0.8.0
+
+A lista do grupo pode ser usada como entrada de presença, mas não é fonte oficial de estado.
+
+Regras:
+- o texto é interpretado localmente por parser determinístico;
+- a importação exige prévia antes de alterar a sessão;
+- nomes inequívocos podem reutilizar `Player` existente;
+- nomes ambíguos exigem decisão explícita do operador;
+- novos nomes só criam identidade persistente na confirmação;
+- goleiros identificados entram como presentes com indicação de goleiro no snapshot da sessão;
+- data, hora e local encontrados na mensagem são apenas informativos e não sobrescrevem silenciosamente a sessão;
+- cancelar a prévia não altera a presença.
