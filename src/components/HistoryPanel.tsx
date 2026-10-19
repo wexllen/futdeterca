@@ -1,6 +1,6 @@
 import {TEAM_IDS} from '../domain/kits';
 import {canEndSession} from '../domain/session';
-import {teamStats} from '../domain/statistics';
+import {rankTeams,teamStats} from '../domain/statistics';
 import type {Session,TeamId} from '../domain/types';
 import {formatSessionDate,teamName,teamStyle} from '../ui/presentation';
 import {SessionLanding} from './SessionLanding';
@@ -19,6 +19,8 @@ export function HistoryPanel({
 
   const active=selected.id===activeSessionId;
   const stats=(id:TeamId)=>teamStats(selected.history,id);
+  const ranking=rankTeams(selected.history,TEAM_IDS);
+  const showRanking=selected.history.length>0;
 
   return <section>
     <div className="section-title history-title">
@@ -39,11 +41,16 @@ export function HistoryPanel({
     </div>
 
     <div className="history-summary">
-      {TEAM_IDS.map(id=>{
-        const data=stats(id);
+      {(showRanking?ranking:TEAM_IDS.map(id=>({team:id,position:0,stats:stats(id)}))).map(entry=>{
+        const id=entry.team;
+        const data=entry.stats;
         const team=selected.teams[id];
+        const medal=entry.position===1?'🥇':entry.position===2?'🥈':'🥉';
         return <div className="history-summary-card" key={id} style={teamStyle(team)}>
-          <div className="history-summary-team"><span className="dot"/><strong>{teamName(team)}</strong></div>
+          <div className="history-summary-head">
+            <div className="history-summary-team"><span className="dot"/><strong>{teamName(team)}</strong></div>
+            {showRanking&&<div className="history-rank" aria-label={`${entry.position}º lugar`}><span>{medal}</span><strong>{entry.position}º</strong></div>}
+          </div>
           <div className="history-summary-stats">
             <span><b>{data.games}</b><small>J</small></span>
             <span><b>{data.wins}</b><small>V</small></span>
