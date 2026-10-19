@@ -24,6 +24,7 @@ export const initialState=():AppState=>({
 });
 
 const TEAM_IDS:TeamId[]=['team-1','team-2','team-3'];
+let persistenceBlocked=false;
 
 const isMatchLike=(value:unknown):value is Match=>{
   if(!value||typeof value!=='object')return false;
@@ -96,6 +97,7 @@ const errorMessage=(error:unknown)=>
 export const loadState=(now=Date.now()):StateLoadResult=>{
   const raw=localStorage.getItem(STORAGE_KEY);
   if(raw===null){
+    persistenceBlocked=false;
     return {state:initialState(),status:'empty',recovery:null};
   }
 
@@ -103,8 +105,10 @@ export const loadState=(now=Date.now()):StateLoadResult=>{
     const parsed:unknown=JSON.parse(raw);
     if(isLegacyV7(parsed))preserveV7BeforeMigration(raw);
     const state=normalizeState(parsed);
+    persistenceBlocked=false;
     return {state,status:'ready',recovery:null};
   }catch(error){
+    persistenceBlocked=true;
     return {
       state:initialState(),
       status:'recovery',
@@ -117,10 +121,20 @@ export const loadState=(now=Date.now()):StateLoadResult=>{
   }
 };
 
-export const saveState=(state:AppState)=>
+export const saveState=(state:AppState)=>{
+  if(persistenceBlocked)return false;
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  return true;
+};
 
-export const clearState=()=>localStorage.removeItem(STORAGE_KEY);
+export const resumePersistence=()=>{
+  persistenceBlocked=false;
+};
+
+export const clearState=()=>{
+  localStorage.removeItem(STORAGE_KEY);
+  persistenceBlocked=false;
+};
 
 export const isBackupLike=(value:unknown)=>
   isV8State(value)||isLegacyV7(value);
