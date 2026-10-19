@@ -12,7 +12,7 @@ Antes de alterar regras de negócio, leia:
 
 ## Estado atual
 
-A `main` está em V0.7.2. A linha de desenvolvimento V0.8 usa schema V9, separa `Player` persistente de `SessionParticipant` e mantém leitura/migração de backups V8 e V7. A persistência usa `localStorage` na chave `terca-fc:state`.
+A versão atual é V0.8.0, com schema V9, `Player` persistente separado de `SessionParticipant`, presença por sessão, composição manual e importação local da lista do WhatsApp. Backups V8 e V7 continuam aceitos por migração explícita. A persistência usa `localStorage` na chave `terca-fc:state` e protege o raw original quando um estado não pode ser interpretado.
 
 Stack atual:
 - React
@@ -54,7 +54,8 @@ A suíte de caracterização usa o test runner nativo do Node. Antes de abrir PR
 7. Não adicionar backend, autenticação, sincronização, ranking, OVR ou outras camadas sem requisito validado.
 8. Evitar reescritas amplas. Preferir refatoração incremental com comportamento preservado.
 9. Tratar o backup real da primeira terça como fixture obrigatória de regressão para migrações V7+ e manter cobertura explícita de V8 → V9.
-10. O comportamento canônico de tempo é o descrito em `docs/business-rules.md`, mesmo que a implementação atual ainda divirja em algum ponto.
+10. Uma falha de leitura/validação/migração nunca deve transformar dados existentes em estado vazio persistido automaticamente. Preservar o raw antes de qualquer recuperação destrutiva.
+11. O comportamento canônico de tempo é o descrito em `docs/business-rules.md`, mesmo que a implementação atual ainda divirja em algum ponto.
 
 ## Fluxo de mudança recomendado
 
