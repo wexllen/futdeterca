@@ -2,6 +2,7 @@ import {useEffect,useMemo,useState} from 'react';
 import {History,Settings,TimerReset,Users} from 'lucide-react';
 import {Court} from './components/Court';
 import {HistoryPanel} from './components/HistoryPanel';
+import {RecoveryPanel} from './components/RecoveryPanel';
 import {SessionLanding} from './components/SessionLanding';
 import {SettingsPanel} from './components/SettingsPanel';
 import {Teams} from './components/Teams';
@@ -11,7 +12,7 @@ import {activeSession,canEndSession,endSession,sessionById,sortedSessions,startS
 import {totalGoals} from './domain/statistics';
 import type {AppState,Match,Session,TeamId} from './domain/types';
 import {useMatchTimer} from './hooks/useMatchTimer';
-import {loadState,saveState} from './storage/state';
+import {clearState,initialState,loadState,saveState,type StateRecovery} from './storage/state';
 import {formatNow,formatSessionDate} from './ui/presentation';
 
 const finishMatch=(session:Session,reason:FinishReason,now:number):Session=>{
@@ -48,7 +49,9 @@ const finishMatch=(session:Session,reason:FinishReason,now:number):Session=>{
 };
 
 export function App(){
-  const [state,setState]=useState<AppState>(loadState);
+  const [loaded]=useState(loadState);
+  const [state,setState]=useState<AppState>(loaded.state);
+  const [recovery,setRecovery]=useState<StateRecovery|null>(loaded.recovery);
   const [tab,setTab]=useState<'quadra'|'times'|'historico'|'ajustes'>('quadra');
   const [now,setNow]=useState(()=>new Date());
   const [historySessionId,setHistorySessionId]=useState<string|null>(null);
@@ -62,7 +65,9 @@ export function App(){
     return()=>clearInterval(id);
   },[]);
 
-  useEffect(()=>saveState(state),[state]);
+  useEffect(()=>{
+    if(!recovery)saveState(state);
+  },[state,recovery]);
 
   useMatchTimer(active,setState);
 
@@ -152,16 +157,30 @@ export function App(){
     })
   );
 
+  const leaveRecoveryWith=(nextState:AppState)=>{
+    setState(nextState);
+    setRecovery(null);
+  };
+
+  const resetFromRecovery=()=>{
+    clearState();
+    leaveRecoveryWith(initialState());
+  };
+
   const closeTuesday=()=>{
     if(!active||!canEndSession(active))return;
     if(!confirm(`Encerrar a terça de ${formatSessionDate(active.date)}? O histórico será preservado com ${active.history.length} partidas e ${totalGoals(active.history)} gols.`))return;
     setState(current=>endSession(current,Date.now()));
   };
 
+  if(recovery){
+    return <RecoveryPanel recovery={recovery} onRestore={leaveRecoveryWith} onReset={resetFromRecovery}/>;
+  }
+
   return <div className="app">
     <header>
       <div><div className="eyebrow">{formatNow(now)}</div><h1>CEFAS</h1></div>
-      <div className="live"><span/>LOCAL FIRST · V0.7.2</div>
+      <div className="live"><span/>LOCAL FIRST · V0.7.3</div>
     </header>
 
     <main>
