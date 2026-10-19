@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## Versão atual — V0.7.3
+## V0.8.0 — Schema V9
 
 Stack:
 - React
@@ -14,12 +14,31 @@ Stack:
 
 Persistência:
 - chave: `terca-fc:state`
-- schema atual: V8
-- leitura compatível com backup V7
-- backup pré-migração V7 em `terca-fc:state:backup-v7`
-- cópia de recuperação em `terca-fc:state:unreadable-<timestamp>` quando um estado não pode ser interpretado
+- schema da linha V0.8: V9
+- leitura compatível com backups V8 e V7
 
-## Modelo V8
+## Modelo V9
+
+O V9 separa identidade persistente de jogador da composição histórica de uma sessão.
+
+```text
+AppState
+├── version: 9
+├── players[]            # identidades persistentes
+├── activeSessionId
+└── sessions[]
+    └── Session
+        ├── teams        # somente identidade técnica + colete
+        ├── participants # snapshot da composição daquela terça
+        ├── current
+        └── history[]
+```
+
+`SessionParticipant` preserva nome, indicação de goleiro, colete e posição usados naquela noite. O vínculo `playerId` é opcional para permitir migrar dados antigos sem inventar uma identidade que o legado não registrava.
+
+Na migração V8 → V9, os jogadores históricos são preservados como snapshots com `playerId: null`. A aplicação não tenta deduzir silenciosamente que nomes iguais em sessões antigas representam a mesma pessoa.
+
+## Modelo V8 legado
 
 ```text
 AppState
@@ -57,14 +76,17 @@ src/
 │   ├── RecoveryPanel.tsx
 │   ├── SessionLanding.tsx
 │   ├── SettingsPanel.tsx
-│   └── Teams.tsx
+│   ├── Teams.tsx
+│   └── WhatsAppImport.tsx
 ├── domain/
 │   ├── types.ts
 │   ├── kits.ts
 │   ├── match.ts
 │   ├── rotation.ts
 │   ├── session.ts
-│   └── statistics.ts
+│   ├── statistics.ts
+│   ├── whatsapp.ts
+│   └── whatsapp-import.ts
 ├── hooks/
 │   └── useMatchTimer.ts
 ├── storage/
@@ -93,19 +115,13 @@ O domínio não depende de componentes React.
 ### Storage
 
 Responsável por:
-- carregar/salvar V8;
+- carregar/salvar V9;
 - validar backups;
-- migrar V7 para V8;
+- migrar V8 para V9;
+- manter a cadeia V7 → V8 → V9;
 - manter a mesma chave de `localStorage`;
-- impedir escrita automática depois de uma falha de leitura;
-- preservar o raw original para recuperação;
-- criar uma cópia única do V7 antes de migrá-lo.
-
-Regra de integridade:
-
-> O CEFAS pode deixar de entender os dados, mas nunca pode destruí-los porque deixou de entendê-los.
-
-Se o conteúdo principal não puder ser interpretado, `loadState` entra em modo de recuperação. O estado vazio usado apenas para renderização não pode ser salvo sobre a chave principal. A persistência só é retomada depois de uma ação explícita do operador: restaurar um backup válido ou apagar/recomeçar.
+- preservar raw pré-migração V7/V8;
+- bloquear persistência automática quando o estado existente não puder ser interpretado.
 
 ### Hooks
 
@@ -120,9 +136,10 @@ O hook não decide o vencedor nem encerra fisicamente a partida. A semântica de
 
 Os componentes maiores foram separados por responsabilidade visual:
 - `Court`: placar, controles e resultado da partida;
-- `Teams`: confronto inicial, coletes e jogadores da sessão;
+- `Teams`: confronto inicial, presença, coletes e composição da sessão;
+- `WhatsAppImport`: colagem, prévia e reconciliação da lista;
+- `RecoveryPanel`: recuperação segura de estado local ilegível/incompatível;
 - `HistoryPanel`: resumo e partidas por terça;
-- `RecoveryPanel`: bloqueio seguro quando o estado local não pode ser lido, com exportação bruta/restauração;
 - `SettingsPanel`: backup/importação e reset local;
 - `SessionLanding`: entrada quando não há terça ativa.
 
@@ -146,13 +163,11 @@ Ela não contém mais a implementação visual completa das telas.
 
 ## Nova terça
 
-Uma nova `Session` começa com a composição padrão da aplicação:
-- coletes Azul, Vermelho e Amarelo;
-- jogadores placeholder/default.
+Uma nova `Session` começa com os coletes padrão Azul, Vermelho e Amarelo e sem jogadores presentes.
 
-Ela não herda coletes nem jogadores da sessão anterior. Sessões encerradas permanecem preservadas para consulta histórica.
+Ela não herda coletes nem presença da sessão anterior. A presença pode ser preenchida manualmente ou pela importação revisada da lista do WhatsApp. Sessões encerradas permanecem preservadas para consulta histórica.
 
-## Migração V7 → V8
+## Migrações V7 → V8 → V9
 
 Mapeamento técnico:
 
@@ -164,12 +179,19 @@ vermelho  -> team-3
 
 Os hex dos coletes são preservados, portanto o backup real Laranja/Branco/Preto continua visualmente igual.
 
-A migração:
+A etapa V7 → V8:
 - cria uma Session;
 - considera a sessão migrada ativa, pois o V7 não registrava formalmente o encerramento da terça;
 - infere a data pela menor marca temporal de eventos;
 - reconstrói `startedAt` e `finishedAt` de partidas a partir dos eventos quando possível;
 - preserva histórico, placares, vencedores, motivos e eventos.
+
+A etapa V8 → V9:
+- remove jogadores de dentro de `Team`;
+- converte a composição antiga em `SessionParticipant[]`;
+- preserva nomes, goleiros, coletes e slots como snapshot histórico;
+- não infere identidade persistente para dados legados;
+- mantém `players[]` disponível para as identidades criadas na V0.8.
 
 ## Tempo
 
@@ -197,14 +219,16 @@ A suíte usa o test runner nativo do Node e cobre:
 - estatísticas;
 - estado `expired`;
 - gol após 00:00;
-- migração do backup V7 real;
+- migração do backup V7 real até V9;
+- migração direta de backup V8 para V9;
 - IDs neutros;
 - preservação de 12 partidas / 27 gols;
 - ciclo encerrar sessão → iniciar outra;
-- nova sessão com defaults sem alterar a sessão anterior;
-- estado local inválido não sendo sobrescrito;
-- bloqueio de persistência durante recuperação;
-- backup V7 criado antes da migração.
+- nova sessão sem presença herdada e sem alterar a sessão anterior;
+- presença/alocação e duplicidade de participantes;
+- parser/importação do WhatsApp;
+- snapshots históricos e roundtrip V9;
+- recuperação segura de estado incompatível.
 
 O comando local consolidado é:
 
@@ -233,3 +257,96 @@ A ausência dessas ferramentas não deve ser interpretada como proibição futur
 ## Princípio de evolução
 
 A modularização deve reduzir raio de impacto e facilitar as próximas capacidades do domínio. Não criar camadas genéricas, abstrações ou serviços sem requisito concreto.
+
+
+## Presença e composição manual — linha V0.8
+
+Uma nova sessão V9 começa sem jogadores presentes. O cadastro persistente vive em `AppState.players`; participar de uma terça cria um `SessionParticipant` com snapshot de nome/goleiro e vínculo opcional por `playerId`.
+
+Fluxo operacional:
+
+```text
+Player cadastrado
+  ↓ adicionar à terça
+SessionParticipant
+  ↓ disponível
+alocação em teamId + slot
+  ↓
+colete da noite
+```
+
+Regras:
+- remover do colete apenas zera `teamId` e `slot`, devolvendo o participante aos disponíveis;
+- remover da terça remove o `SessionParticipant`, mas preserva o `Player` persistente;
+- um slot aceita no máximo um participante;
+- o mesmo participante é movido, nunca duplicado, entre coletes;
+- a vaga GK prioriza goleiros na apresentação, sem impedir ajuste manual;
+- sessões legadas preservam seus snapshots; somente novas sessões começam vazias.
+
+
+## Parser local de lista do WhatsApp — linha V0.8
+
+A lista do grupo é tratada como entrada textual, não como fonte oficial de estado. O parser vive em `src/domain/whatsapp.ts`, é puro/determinístico e não depende de API, backend ou IA.
+
+Fluxo:
+
+```text
+texto colado
+  ↓
+parseWhatsAppList
+  ↓
+goleiros / jogadores / metadados / linhas numeradas ignoradas
+  ↓
+prévia e reconciliação em etapa posterior
+```
+
+O parser:
+- reconhece seções de goleiros e jogadores;
+- ignora vagas numeradas vazias;
+- aceita hífen, travessão, dois-pontos e variações de espaçamento;
+- aceita prefixos como `8 e faixa - Nome`;
+- remove artefatos comuns de menção e caracteres invisíveis;
+- extrai opcionalmente data, hora e local apenas como metadados;
+- não altera `Session`, `Player` ou presença.
+
+
+## Importação + prévia + reconciliação — linha V0.8
+
+O parser não altera o estado diretamente. A importação possui uma etapa explícita de prévia e reconciliação antes de qualquer presença ser criada.
+
+Fluxo:
+
+```text
+colar mensagem
+  ↓
+parseWhatsAppList
+  ↓
+prévia
+  ↓
+reconciliação de nomes
+  ↓
+confirmar
+  ↓
+Player / SessionParticipant
+```
+
+Regras:
+- correspondência exata e inequívoca por nome reutiliza o `Player` existente;
+- mais de um cadastro com o mesmo nome exige escolha explícita ou cadastro de uma nova identidade;
+- nome sem correspondência cria um novo `Player` somente na confirmação;
+- jogador já presente não é duplicado;
+- nome repetido na mesma lista não cria identidades duplicadas;
+- indicação de goleiro importada vale para o snapshot da terça, sem reescrever silenciosamente o cadastro persistente;
+- data, hora e local encontrados são apenas informativos na prévia e não sobrescrevem a `Session`.
+
+
+## Histórico e hardening — linha V0.8
+
+A composição exibida no histórico vem exclusivamente de `Session.participants` e `Session.teams`, nunca do cadastro atual em `AppState.players`.
+
+Isso garante que:
+- renomear um `Player` no futuro não reescreve o nome registrado em uma terça encerrada;
+- trocar colete em outra sessão não altera a composição antiga;
+- o histórico individual pode ser derivado por `playerId`, mantendo o snapshot de cada participação;
+- export/import V9 preserva identidade persistente e snapshots de sessão;
+- estados V9 estruturalmente inconsistentes (mesma vaga ocupada duas vezes, mesmo `Player` vinculado duas vezes na mesma sessão, slot inválido) são rejeitados e entram no fluxo seguro de recuperação.
