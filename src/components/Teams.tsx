@@ -2,8 +2,8 @@ import type React from 'react';
 import {KIT_PRESETS,TEAM_IDS,isPresetHex} from '../domain/kits';
 import {newMatch} from '../domain/match';
 import {teamStats} from '../domain/statistics';
-import {updateActiveSession} from '../domain/session';
-import type {AppState,Session,Team,TeamId,TeamStats} from '../domain/types';
+import {teamParticipants,updateActiveSession} from '../domain/session';
+import type {AppState,Session,SessionParticipant,Team,TeamId,TeamStats} from '../domain/types';
 import {formatSessionDate,teamName,teamStyle} from '../ui/presentation';
 
 function InitialMatchSelector({session,setSession}:{session:Session;setSession:(update:(session:Session)=>Session)=>void}){
@@ -45,18 +45,16 @@ function InitialMatchSelector({session,setSession}:{session:Session;setSession:(
 }
 
 function TeamEditor({
-  team,stats,onChange,kitLocked,usedHexes,
+  team,participants,stats,onChange,onParticipantChange,kitLocked,usedHexes,
 }:{
   team:Team;
+  participants:SessionParticipant[];
   stats:TeamStats;
   onChange:(team:Team)=>void;
+  onParticipantChange:(participantId:string,name:string)=>void;
   kitLocked:boolean;
   usedHexes:string[];
 }){
-  const updateName=(index:number,name:string)=>{
-    const players=team.players.map((player,current)=>current===index?{...player,name}:player);
-    onChange({...team,players});
-  };
 
   const chooseKit=(hex:string)=>{
     if(kitLocked)return;
@@ -102,10 +100,10 @@ function TeamEditor({
       {kitLocked&&<div className="kit-lock-note">Coletes bloqueados após o início da primeira partida.</div>}
     </div>
 
-    {team.players.map((player,index)=>
-      <div className="player" key={player.id}>
-        <span>{player.gk?'GK':String(index).padStart(2,'0')}</span>
-        <input value={player.name} onChange={event=>updateName(index,event.target.value)}/>
+    {participants.map((participant,index)=>
+      <div className="player" key={participant.id}>
+        <span>{participant.goalkeeper?'GK':String(index).padStart(2,'0')}</span>
+        <input value={participant.name} onChange={event=>onParticipantChange(participant.id,event.target.value)}/>
       </div>
     )}
   </div>;
@@ -123,10 +121,17 @@ export function Teams({session,setState}:{session:Session;setState:React.Dispatc
         <TeamEditor
           key={id}
           team={session.teams[id]}
+          participants={teamParticipants(session,id)}
           stats={stats(id)}
           kitLocked={session.history.length>0||session.current.status!=='ready'}
           usedHexes={TEAM_IDS.filter(other=>other!==id).map(other=>session.teams[other].hex)}
           onChange={team=>setSession(current=>({...current,teams:{...current.teams,[id]:team}}))}
+          onParticipantChange={(participantId,name)=>setSession(current=>({
+            ...current,
+            participants:current.participants.map(participant=>
+              participant.id===participantId?{...participant,name}:participant
+            ),
+          }))}
         />
       )}
     </div>
