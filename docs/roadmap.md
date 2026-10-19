@@ -55,12 +55,13 @@ Veja também: [Gestão do projeto](./project-management.md).
 
 ## PRÓXIMO — V0.7.2 — classificação da terça — Issue #19
 
-- [ ] ordenar os três times por quantidade de vitórias;
-- [ ] exibir 🥇🥈🥉 no resumo do Histórico;
-- [ ] manter J/V/D/G visíveis;
-- [ ] empates em vitórias compartilham colocação;
-- [ ] não criar critério artificial de desempate;
-- [ ] manter partidas em ordem cronológica.
+- [x] ordenar os três times por quantidade de vitórias;
+- [x] exibir 🥇🥈🥉/posição no resumo do Histórico;
+- [x] manter J/V/D/G visíveis;
+- [x] empates em vitórias compartilham colocação;
+- [x] não criar critério artificial de desempate;
+- [x] não exibir medalhas antes da primeira partida encerrada;
+- [x] manter partidas em ordem cronológica.
 
 ## P0 — V0.7.x — consolidação arquitetural — Issue #8
 
