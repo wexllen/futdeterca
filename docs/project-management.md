@@ -13,9 +13,9 @@ O backlog vivo está em GitHub Issues. Cada marco funcional possui uma issue agr
 | Engenharia — testes, CI e domínio | #6 | Concluído |
 | V0.7.0 — Sessões/Terças + V8 | #7 | Concluído |
 | V0.7.1 — nova terça limpa | #17 | Concluído |
-| V0.7.x — consolidação arquitetural | #8 | Concluído após merge deste ciclo |
-| V0.7.2 — classificação da terça | #19 | Próximo |
-| V0.8.0 — jogadores independentes | #9 | Planejado |
+| V0.7.x — consolidação arquitetural | #8 | Concluído |
+| V0.7.2 — classificação da terça | #19 | Concluído |
+| V0.8.0 — jogadores independentes | #9 | Próximo |
 | V0.9.0 — empréstimos e goleiros | #10 | Planejado |
 | V0.10.0 — eventos individuais | #11 | Planejado |
 | V0.11.0 — dashboard e estatísticas | #12 | Planejado |
@@ -65,13 +65,19 @@ Issue: https://github.com/wexllen/futdeterca/issues/8
 
 Separa componentes React, timer, apresentação, persistência e domínio sem alterar a experiência funcional.
 
-## Próximo marco funcional
-
 ### V0.7.2 — classificação da terça
 
 Issue: https://github.com/wexllen/futdeterca/issues/19
 
-Objetivo: apresentar a classificação da sessão a partir das vitórias já derivadas do histórico, sem criar critério artificial de desempate.
+O Histórico passa a classificar os três times por vitórias, com medalhas/posição, empate compartilhado e sem critério artificial de desempate.
+
+## Próximo marco funcional
+
+### V0.8.0 — jogadores independentes dos coletes
+
+Issue: https://github.com/wexllen/futdeterca/issues/9
+
+Objetivo: transformar jogador em identidade persistente, separada do colete/time daquela terça.
 
 ## Convenção de trabalho
 

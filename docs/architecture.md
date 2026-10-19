@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## Linha V0.7.x
+## Versão atual — V0.7.2
 
 Stack:
 - React

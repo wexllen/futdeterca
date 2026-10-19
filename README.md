@@ -1,4 +1,4 @@
-# CEFAS — V0.7.1
+# CEFAS — V0.7.2
 
 Aplicação local-first para operar e preservar o histórico da pelada de terça.
 
@@ -21,7 +21,8 @@ A V0.7 introduz sessões históricas:
 - consultar terças anteriores;
 - preservar coletes e partidas de cada sessão;
 - iniciar cada nova terça com coletes e jogadores padrão, sem herdar a composição anterior;
-- exportar/importar todas as sessões em um único backup.
+- exportar/importar todas as sessões em um único backup;
+- classificar os três times da terça por vitórias no Histórico, com empates compartilhando a mesma colocação.
 
 ## Persistência
 
