@@ -87,3 +87,20 @@ Houve surpresa positiva com:
 - possibilidade de salvar o histórico.
 
 Também foi observado que a informação J/V/D já existia em Times, mas o operador procurou os resultados no Histórico. Isso motivou o resumo J/V/D/G no próprio Histórico.
+
+
+## V0.8.0 — presença e composição
+
+A identidade do jogador agora é independente do colete. Cada terça registra sua própria presença e composição sem herdar jogadores da sessão anterior.
+
+O operador pode:
+- adicionar jogadores já cadastrados;
+- cadastrar um novo jogador;
+- importar a lista já usada no WhatsApp;
+- revisar a prévia antes de confirmar;
+- resolver nomes ambíguos;
+- montar manualmente os três coletes a partir dos presentes disponíveis.
+
+O produto continua deliberadamente sem sorteio automático nesta versão: o WhatsApp fornece presença; o operador decide a composição.
+
+A composição de uma terça é histórica. Alterações futuras no cadastro do jogador não reescrevem o passado.
