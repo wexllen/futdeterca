@@ -132,14 +132,20 @@ const mapMatch=(legacy:LegacyMatch,finished:boolean):Match=>{
 const normalizeLegacyTeam=(
   id:TeamId,
   raw:LegacyTeam|undefined,
-  fallback:Team,
-):Team=>{
-  const hex=String(raw?.hex||fallback.hex).toLowerCase();
-  const source=Array.isArray(raw?.players)?raw!.players!:fallback.players;
+):LegacyV8Team=>{
+  const fallbackPlayers=LEGACY_DEFAULT_PLAYERS[id].map((name,index)=>({
+    id:`${id}-${index}`,
+    name,
+    gk:index===0,
+    games:0,
+    wins:0,
+    goals:0,
+  }));
+  const source=Array.isArray(raw?.players)?raw.players:fallbackPlayers;
 
   return {
     id,
-    hex,
+    hex:String(raw?.hex||DEFAULT_HEX[id]).toLowerCase(),
     players:source.map((player,index)=>({
       id:player.id||`${id}-${index}`,
       name:player.name||`Jogador ${index+1}`,
@@ -160,11 +166,10 @@ export const isLegacyV7=(value:unknown):value is LegacyV7State=>{
 export const migrateV7=(legacy:LegacyV7State,now=Date.now()):AppState=>{
   if(!isLegacyV7(legacy))throw new Error('Backup V7 inválido');
 
-  const fallback=defaultTeams();
-  const teams:Session['teams']={
-    'team-1':normalizeLegacyTeam('team-1',legacy.teams?.azul,fallback['team-1']),
-    'team-2':normalizeLegacyTeam('team-2',legacy.teams?.verde,fallback['team-2']),
-    'team-3':normalizeLegacyTeam('team-3',legacy.teams?.vermelho,fallback['team-3']),
+  const teams:LegacyV8State['sessions'][number]['teams']={
+    'team-1':normalizeLegacyTeam('team-1',legacy.teams?.azul),
+    'team-2':normalizeLegacyTeam('team-2',legacy.teams?.verde),
+    'team-3':normalizeLegacyTeam('team-3',legacy.teams?.vermelho),
   };
 
   const history=(legacy.history??[]).map(match=>mapMatch(match,true));
@@ -172,23 +177,24 @@ export const migrateV7=(legacy:LegacyV7State,now=Date.now()):AppState=>{
   const firstEvent=minTimestamp([...(legacy.history??[]),legacy.current!]);
   const startedAt=firstEvent??now;
   const date=localDateKey(new Date(startedAt));
+  const sessionId=`legacy-v7-${date}`;
 
-  const session:Session={
-    id:`legacy-v7-${date}`,
-    date,
-    startedAt,
-    finishedAt:null,
-    status:'active',
-    teams,
-    current,
-    history,
-  };
-
-  return {
+  const v8:LegacyV8State={
     version:8,
-    activeSessionId:session.id,
-    sessions:[session],
+    activeSessionId:sessionId,
+    sessions:[{
+      id:sessionId,
+      date,
+      startedAt,
+      finishedAt:null,
+      status:'active',
+      teams,
+      current,
+      history,
+    }],
   };
+
+  return migrateV8(v8);
 };
 
 export const legacyKitLabel=(legacy:LegacyTeam|undefined)=>
