@@ -1,6 +1,6 @@
 # Arquitetura — CEFAS
 
-## Versão atual — V0.7.2
+## Linha V0.8 em desenvolvimento — Schema V9
 
 Stack:
 - React
@@ -14,10 +14,31 @@ Stack:
 
 Persistência:
 - chave: `terca-fc:state`
-- schema atual: V8
-- leitura compatível com backup V7
+- schema da linha V0.8: V9
+- leitura compatível com backups V8 e V7
 
-## Modelo V8
+## Modelo V9
+
+O V9 separa identidade persistente de jogador da composição histórica de uma sessão.
+
+```text
+AppState
+├── version: 9
+├── players[]            # identidades persistentes
+├── activeSessionId
+└── sessions[]
+    └── Session
+        ├── teams        # somente identidade técnica + colete
+        ├── participants # snapshot da composição daquela terça
+        ├── current
+        └── history[]
+```
+
+`SessionParticipant` preserva nome, indicação de goleiro, colete e posição usados naquela noite. O vínculo `playerId` é opcional para permitir migrar dados antigos sem inventar uma identidade que o legado não registrava.
+
+Na migração V8 → V9, os jogadores históricos são preservados como snapshots com `playerId: null`. A aplicação não tenta deduzir silenciosamente que nomes iguais em sessões antigas representam a mesma pessoa.
+
+## Modelo V8 legado
 
 ```text
 AppState
@@ -90,9 +111,10 @@ O domínio não depende de componentes React.
 ### Storage
 
 Responsável por:
-- carregar/salvar V8;
+- carregar/salvar V9;
 - validar backups;
-- migrar V7 para V8;
+- migrar V8 para V9;
+- manter a cadeia V7 → V8 → V9;
 - manter a mesma chave de `localStorage`.
 
 ### Hooks
@@ -139,7 +161,7 @@ Uma nova `Session` começa com a composição padrão da aplicação:
 
 Ela não herda coletes nem jogadores da sessão anterior. Sessões encerradas permanecem preservadas para consulta histórica.
 
-## Migração V7 → V8
+## Migrações V7 → V8 → V9
 
 Mapeamento técnico:
 
@@ -151,12 +173,19 @@ vermelho  -> team-3
 
 Os hex dos coletes são preservados, portanto o backup real Laranja/Branco/Preto continua visualmente igual.
 
-A migração:
+A etapa V7 → V8:
 - cria uma Session;
 - considera a sessão migrada ativa, pois o V7 não registrava formalmente o encerramento da terça;
 - infere a data pela menor marca temporal de eventos;
 - reconstrói `startedAt` e `finishedAt` de partidas a partir dos eventos quando possível;
 - preserva histórico, placares, vencedores, motivos e eventos.
+
+A etapa V8 → V9:
+- remove jogadores de dentro de `Team`;
+- converte a composição antiga em `SessionParticipant[]`;
+- preserva nomes, goleiros, coletes e slots como snapshot histórico;
+- não infere identidade persistente para dados legados;
+- mantém `players[]` disponível para as identidades criadas na V0.8.
 
 ## Tempo
 
@@ -184,7 +213,8 @@ A suíte usa o test runner nativo do Node e cobre:
 - estatísticas;
 - estado `expired`;
 - gol após 00:00;
-- migração do backup V7 real;
+- migração do backup V7 real até V9;
+- migração direta de backup V8 para V9;
 - IDs neutros;
 - preservação de 12 partidas / 27 gols;
 - ciclo encerrar sessão → iniciar outra;
