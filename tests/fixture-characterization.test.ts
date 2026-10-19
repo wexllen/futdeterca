@@ -2,18 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {migrateV7,type LegacyV7State} from '../src/storage/migrations.ts';
-import {activeSession,endSession,startSession} from '../src/domain/session.ts';
+import {activeSession,endSession,startSession,teamParticipants} from '../src/domain/session.ts';
 import {rankTeams,teamStats,totalGoals} from '../src/domain/statistics.ts';
 
 const legacy=JSON.parse(
   readFileSync(new URL('./fixtures/cefas-v7-real.json',import.meta.url),'utf8'),
 ) as LegacyV7State;
 
-test('backup real V7 migra para V8 preservando fatos observados',()=>{
+test('backup real V7 migra ate V9 preservando fatos observados',()=>{
   const state=migrateV7(legacy,1_700_000_000_000);
   const session=activeSession(state);
 
-  assert.equal(state.version,8);
+  assert.equal(state.version,9);
+  assert.deepEqual(state.players,[]);
   assert.ok(session);
   assert.equal(session.history.length,12);
   assert.equal(totalGoals(session.history),27);
@@ -43,6 +44,23 @@ test('migracao V7 troca ids legados por ids neutros e preserva coletes',()=>{
     assert.match(match.challenger,/^team-[123]$/);
     assert.match(match.waiting,/^team-[123]$/);
   }
+});
+
+test('migracao V7 preserva composicao historica como snapshot de participantes',()=>{
+  const session=activeSession(migrateV7(legacy,1_700_000_000_000));
+  assert.ok(session);
+
+  const orange=teamParticipants(session,'team-1');
+  const white=teamParticipants(session,'team-2');
+  const black=teamParticipants(session,'team-3');
+
+  assert.equal(orange.length,6);
+  assert.equal(white.length,6);
+  assert.equal(black.length,6);
+  assert.equal(orange[1].name,'Pedrinho');
+  assert.equal(white[1].name,'Pedrao');
+  assert.equal(black[1].name,'Igor');
+  assert.ok([...orange,...white,...black].every(participant=>participant.playerId===null));
 });
 
 test('primeira terca migra como sessao ativa para evitar encerramento inferido',()=>{
@@ -95,9 +113,9 @@ test('uma sessao encerrada permanece e outra pode ser iniciada sem herdar colete
   assert.equal(newSession.teams['team-2'].hex,'#d8443d');
   assert.equal(newSession.teams['team-3'].hex,'#f4d03f');
 
-  assert.equal(newSession.teams['team-1'].players[0].name,'Goleiro Azul');
-  assert.equal(newSession.teams['team-2'].players[0].name,'Goleiro Vermelho');
-  assert.equal(newSession.teams['team-3'].players[0].name,'Goleiro Amarelo');
+  assert.equal(teamParticipants(newSession,'team-1')[0].name,'Goleiro Azul');
+  assert.equal(teamParticipants(newSession,'team-2')[0].name,'Goleiro Vermelho');
+  assert.equal(teamParticipants(newSession,'team-3')[0].name,'Goleiro Amarelo');
 
   assert.equal(next.sessions[0].teams['team-1'].hex.toLowerCase(),'#ff6a00');
   assert.equal(next.sessions[0].teams['team-2'].hex.toLowerCase(),'#ffffff');
