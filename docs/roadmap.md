@@ -77,10 +77,13 @@ Veja também: [Gestão do projeto](./project-management.md).
 
 ## PRÓXIMO — V0.8.0 — jogadores independentes dos coletes — Issue #9
 
-- [ ] identidade persistente de `Player`;
-- [ ] seleção de presentes por sessão;
-- [ ] alocação aos coletes;
-- [ ] histórico individual derivado.
+- [x] identidade persistente de `Player`;
+- [x] seleção de presentes por sessão;
+- [x] alocação aos coletes;
+- [x] importação local da lista do WhatsApp com prévia/reconciliação;
+- [x] composição histórica por sessão;
+- [x] helper de histórico individual derivado;
+- [ ] integração final e release V0.8.0.
 
 ## P1 — V0.9.0 — empréstimos e goleiros — Issue #10
 

@@ -156,3 +156,28 @@
   .whatsapp-preview-row{grid-template-columns:36px minmax(0,1fr)}.whatsapp-preview-row select{grid-column:2}
   .whatsapp-import-actions{position:sticky;bottom:-24px;background:#fff;padding:12px 0 0}
 }
+
+
+/* v0.8.0 — composição histórica */
+.history-composition{background:#fff;border-top:2px solid #111;padding:16px 18px;margin-bottom:14px}
+.history-composition-title{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px}
+.history-composition-title h3{font:600 22px 'Oswald';text-transform:uppercase}
+.history-composition-title>span{font-size:10px;font-weight:700;text-transform:uppercase;color:#777}
+.history-composition-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.history-composition-team{--team:#111;border:1px solid #e1ded6;border-top:4px solid var(--team);padding:10px 12px;min-width:0}
+.history-composition-team-head{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:6px;align-items:center;margin-bottom:7px}
+.history-composition-team-head .dot{background:var(--team)}
+.history-composition-team-head strong{font:600 16px 'Oswald';text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-composition-team-head small{font-size:9px;color:#777}
+.history-composition-team>p{font-size:10px;color:#8a8881;padding:8px 0}
+.history-composition-player{display:grid;grid-template-columns:28px minmax(0,1fr);gap:5px;align-items:center;padding:6px 0;border-top:1px solid #f0eee8}
+.history-composition-player>span{font-size:9px;font-weight:700;color:#999}
+.history-composition-player>strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-unassigned{margin-top:10px;padding-top:10px;border-top:1px solid #eee}
+.history-unassigned>small{display:block;margin-bottom:6px;font-size:9px}
+.history-unassigned>div{display:flex;gap:6px;flex-wrap:wrap}
+.history-unassigned span{font-size:10px;background:#f3f1eb;padding:5px 7px}
+@media(max-width:700px){
+  .history-composition{padding:14px 10px}.history-composition-grid{grid-template-columns:1fr}
+  .history-composition-title{align-items:flex-start;flex-direction:column}
+}

@@ -1,9 +1,15 @@
-import type {Match,TeamId,TeamStats} from './types.ts';
+import type {Match,Session,SessionParticipant,TeamId,TeamStats} from './types.ts';
 
 export type TeamRankingEntry={
   team:TeamId;
   position:number;
   stats:TeamStats;
+};
+
+export type PlayerParticipationRecord={
+  sessionId:string;
+  date:string;
+  participant:SessionParticipant;
 };
 
 export const teamStats=(history:Match[],team:TeamId):TeamStats=>{
@@ -45,3 +51,16 @@ export const rankTeams=(
 
 export const totalGoals=(history:Match[])=>
   history.reduce((total,match)=>total+match.sd+match.sc,0);
+
+export const playerParticipationHistory=(sessions:Session[],playerId:string):PlayerParticipationRecord[]=>
+  sessions
+    .flatMap(session=>
+      session.participants
+        .filter(participant=>participant.playerId===playerId)
+        .map(participant=>({
+          sessionId:session.id,
+          date:session.date,
+          participant:{...participant},
+        }))
+    )
+    .sort((left,right)=>right.date.localeCompare(left.date));

@@ -67,7 +67,7 @@ const isParticipantLike=(value:unknown):value is SessionParticipant=>{
 const isSessionLike=(value:unknown):value is Session=>{
   if(!value||typeof value!=='object')return false;
   const session=value as Session;
-  return Boolean(
+  if(!(
     typeof session.id==='string'&&
     (session.status==='active'||session.status==='finished')&&
     session.teams&&
@@ -77,7 +77,30 @@ const isSessionLike=(value:unknown):value is Session=>{
     isMatchLike(session.current)&&
     Array.isArray(session.history)&&
     session.history.every(isMatchLike)
-  );
+  ))return false;
+
+  const participantIds=new Set(session.participants.map(participant=>participant.id));
+  if(participantIds.size!==session.participants.length)return false;
+
+  const linkedPlayerIds=session.participants
+    .map(participant=>participant.playerId)
+    .filter((playerId):playerId is string=>playerId!==null);
+  if(new Set(linkedPlayerIds).size!==linkedPlayerIds.length)return false;
+
+  const occupiedSlots=new Set<string>();
+  for(const participant of session.participants){
+    if(participant.teamId===null){
+      if(participant.slot!==null)return false;
+      continue;
+    }
+
+    if(participant.slot===null||!Number.isInteger(participant.slot)||participant.slot<0||participant.slot>5)return false;
+    const key=`${participant.teamId}:${participant.slot}`;
+    if(occupiedSlots.has(key))return false;
+    occupiedSlots.add(key);
+  }
+
+  return true;
 };
 
 export const isV9State=(value:unknown):value is AppState=>{

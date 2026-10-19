@@ -124,3 +124,73 @@ test('estado V9 valido continua permitindo persistencia normal',()=>{
   assert.equal(saveState(loaded.state),true);
   assert.equal(storage.getItem(STORAGE_KEY),raw);
 });
+
+
+test('V9 rejeita dois participantes ocupando a mesma vaga',()=>{
+  const storage=installStorage();
+  const raw=JSON.stringify({
+    version:9,
+    players:[
+      {id:'p1',name:'Zé',goalkeeper:false,createdAt:1},
+      {id:'p2',name:'Will',goalkeeper:false,createdAt:1},
+    ],
+    activeSessionId:null,
+    sessions:[{
+      id:'s1',
+      date:'2026-10-20',
+      startedAt:1,
+      finishedAt:2,
+      status:'finished',
+      teams:{
+        'team-1':{id:'team-1',hex:'#2368d8'},
+        'team-2':{id:'team-2',hex:'#d8443d'},
+        'team-3':{id:'team-3',hex:'#f4d03f'},
+      },
+      participants:[
+        {id:'a',playerId:'p1',name:'Zé',goalkeeper:false,teamId:'team-1',slot:1},
+        {id:'b',playerId:'p2',name:'Will',goalkeeper:false,teamId:'team-1',slot:1},
+      ],
+      current:{id:'m',defender:'team-1',challenger:'team-2',waiting:'team-3',sd:0,sc:0,startedAt:null,endsAt:null,finishedAt:null,remaining:420,status:'ready',events:[]},
+      history:[],
+    }],
+  });
+  storage.setItem(STORAGE_KEY,raw);
+
+  const loaded=loadState(2000);
+
+  assert.equal(loaded.status,'recovery');
+  assert.equal(storage.getItem(STORAGE_KEY),raw);
+});
+
+test('V9 rejeita o mesmo Player vinculado duas vezes na mesma terça',()=>{
+  const storage=installStorage();
+  const raw=JSON.stringify({
+    version:9,
+    players:[{id:'p1',name:'Zé',goalkeeper:false,createdAt:1}],
+    activeSessionId:null,
+    sessions:[{
+      id:'s1',
+      date:'2026-10-20',
+      startedAt:1,
+      finishedAt:2,
+      status:'finished',
+      teams:{
+        'team-1':{id:'team-1',hex:'#2368d8'},
+        'team-2':{id:'team-2',hex:'#d8443d'},
+        'team-3':{id:'team-3',hex:'#f4d03f'},
+      },
+      participants:[
+        {id:'a',playerId:'p1',name:'Zé',goalkeeper:false,teamId:'team-1',slot:1},
+        {id:'b',playerId:'p1',name:'Zé',goalkeeper:false,teamId:'team-2',slot:1},
+      ],
+      current:{id:'m',defender:'team-1',challenger:'team-2',waiting:'team-3',sd:0,sc:0,startedAt:null,endsAt:null,finishedAt:null,remaining:420,status:'ready',events:[]},
+      history:[],
+    }],
+  });
+  storage.setItem(STORAGE_KEY,raw);
+
+  const loaded=loadState(2001);
+
+  assert.equal(loaded.status,'recovery');
+  assert.equal(storage.getItem(STORAGE_KEY),raw);
+});

@@ -1,5 +1,5 @@
 import {TEAM_IDS} from '../domain/kits';
-import {canEndSession} from '../domain/session';
+import {canEndSession,teamParticipants} from '../domain/session';
 import {rankTeams,teamStats} from '../domain/statistics';
 import type {Session,TeamId} from '../domain/types';
 import {formatSessionDate,teamName,teamStyle} from '../ui/presentation';
@@ -60,6 +60,36 @@ export function HistoryPanel({
         </div>;
       })}
     </div>
+
+    <section className="history-composition">
+      <div className="history-composition-title">
+        <div><small>COMPOSIÇÃO DA TERÇA</small><h3>Quem participou</h3></div>
+        <span>{selected.participants.length} presentes</span>
+      </div>
+      <div className="history-composition-grid">
+        {TEAM_IDS.map(id=>{
+          const participants=teamParticipants(selected,id);
+          return <div className="history-composition-team" key={id} style={teamStyle(selected.teams[id])}>
+            <div className="history-composition-team-head">
+              <span className="dot"/>
+              <strong>{teamName(selected.teams[id])}</strong>
+              <small>{participants.length}/6</small>
+            </div>
+            {participants.length===0
+              ?<p>Nenhum jogador registrado neste colete.</p>
+              :participants.map(participant=><div className="history-composition-player" key={participant.id}>
+                <span>{participant.goalkeeper?'GK':participant.slot===null?'—':String(participant.slot).padStart(2,'0')}</span>
+                <strong>{participant.name}</strong>
+              </div>)
+            }
+          </div>;
+        })}
+      </div>
+      {selected.participants.some(participant=>participant.teamId===null)&&<div className="history-unassigned">
+        <small>PRESENTES SEM COLETE</small>
+        <div>{selected.participants.filter(participant=>participant.teamId===null).map(participant=><span key={participant.id}>{participant.name}</span>)}</div>
+      </div>}
+    </section>
 
     {active&&!canEndSession(selected)&&<div className="session-warning">Finalize a partida atual antes de encerrar a terça.</div>}
 
