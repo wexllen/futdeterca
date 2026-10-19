@@ -328,3 +328,15 @@ Regras:
 - nome repetido na mesma lista não cria identidades duplicadas;
 - indicação de goleiro importada vale para o snapshot da terça, sem reescrever silenciosamente o cadastro persistente;
 - data, hora e local encontrados são apenas informativos na prévia e não sobrescrevem a `Session`.
+
+
+## Histórico e hardening — linha V0.8
+
+A composição exibida no histórico vem exclusivamente de `Session.participants` e `Session.teams`, nunca do cadastro atual em `AppState.players`.
+
+Isso garante que:
+- renomear um `Player` no futuro não reescreve o nome registrado em uma terça encerrada;
+- trocar colete em outra sessão não altera a composição antiga;
+- o histórico individual pode ser derivado por `playerId`, mantendo o snapshot de cada participação;
+- export/import V9 preserva identidade persistente e snapshots de sessão;
+- estados V9 estruturalmente inconsistentes (mesma vaga ocupada duas vezes, mesmo `Player` vinculado duas vezes na mesma sessão, slot inválido) são rejeitados e entram no fluxo seguro de recuperação.
