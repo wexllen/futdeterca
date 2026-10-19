@@ -272,3 +272,29 @@ Regras:
 - o mesmo participante é movido, nunca duplicado, entre coletes;
 - a vaga GK prioriza goleiros na apresentação, sem impedir ajuste manual;
 - sessões legadas preservam seus snapshots; somente novas sessões começam vazias.
+
+
+## Parser local de lista do WhatsApp — linha V0.8
+
+A lista do grupo é tratada como entrada textual, não como fonte oficial de estado. O parser vive em `src/domain/whatsapp.ts`, é puro/determinístico e não depende de API, backend ou IA.
+
+Fluxo:
+
+```text
+texto colado
+  ↓
+parseWhatsAppList
+  ↓
+goleiros / jogadores / metadados / linhas numeradas ignoradas
+  ↓
+prévia e reconciliação em etapa posterior
+```
+
+O parser:
+- reconhece seções de goleiros e jogadores;
+- ignora vagas numeradas vazias;
+- aceita hífen, travessão, dois-pontos e variações de espaçamento;
+- aceita prefixos como `8 e faixa - Nome`;
+- remove artefatos comuns de menção e caracteres invisíveis;
+- extrai opcionalmente data, hora e local apenas como metadados;
+- não altera `Session`, `Player` ou presença.
