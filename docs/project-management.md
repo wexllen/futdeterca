@@ -133,9 +133,11 @@ Campos sugeridos:
 
 ## Política de fechamento
 
-Uma issue agregadora de versão só é fechada quando:
-1. critérios de aceite estão satisfeitos;
+Uma issue agregadora de versão pode ser fechada quando:
+1. critérios de aceite implementáveis estão satisfeitos;
 2. CI está verde;
-3. versão publicada não apresenta regressão conhecida;
+3. a versão foi publicada sem regressão conhecida;
 4. migrações relevantes foram testadas com fixtures reais;
-5. quando aplicável, houve validação em uso real.
+5. a validação em uso real já ocorreu **ou** foi separada explicitamente em uma issue de pós-release quando a próxima oportunidade de uso ainda não aconteceu.
+
+Isso evita manter uma capacidade tecnicamente concluída artificialmente aberta, sem perder a disciplina de validação em quadra. Para a V0.8, a entrega funcional está encerrada na #9 e a validação real vive na #35.
