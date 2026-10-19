@@ -58,7 +58,7 @@ export const applyImportPreview=(
   rows:ImportPreviewRow[],
   decisions:ImportDecision[],
   now:number,
-  idFactory=()=>crypto.randomUUID(),
+  idFactory:()=>string=()=>crypto.randomUUID(),
 ):AppState=>{
   if(!state.activeSessionId)return state;
 
