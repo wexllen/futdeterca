@@ -3,6 +3,21 @@ import {isLegacyV8,migrateV8} from './legacy-v8.ts';
 import type {AppState,Match,Player,Session,SessionParticipant,TeamId} from '../domain/types.ts';
 
 export const STORAGE_KEY='terca-fc:state';
+export const LEGACY_V7_BACKUP_KEY=`${STORAGE_KEY}:backup-v7`;
+export const LEGACY_V8_BACKUP_KEY=`${STORAGE_KEY}:backup-v8`;
+export const UNREADABLE_PREFIX=`${STORAGE_KEY}:unreadable-`;
+
+export type StateRecovery={
+  raw:string;
+  recoveryKey:string|null;
+  reason:string;
+};
+
+export type StateLoadResult={
+  state:AppState;
+  status:'empty'|'ready'|'recovery';
+  recovery:StateRecovery|null;
+};
 
 export const initialState=():AppState=>({
   version:9,
@@ -12,6 +27,7 @@ export const initialState=():AppState=>({
 });
 
 const TEAM_IDS:TeamId[]=['team-1','team-2','team-3'];
+let persistenceBlocked=false;
 
 const isMatchLike=(value:unknown):value is Match=>{
   if(!value||typeof value!=='object')return false;
@@ -92,22 +108,82 @@ export const isV9State=(value:unknown):value is AppState=>{
 
 export const normalizeState=(value:unknown):AppState=>{
   if(isV9State(value))return value;
-  if(isLegacyV8(value))return migrateV8(value);
-  if(isLegacyV7(value))return migrateV7(value);
+
+  if(isLegacyV8(value)){
+    const migrated=migrateV8(value);
+    if(isV9State(migrated))return migrated;
+  }
+
+  if(isLegacyV7(value)){
+    const migrated=migrateV7(value);
+    if(isV9State(migrated))return migrated;
+  }
+
   throw new Error('Backup inválido ou incompatível');
 };
 
-export const loadState=():AppState=>{
+const preserveOnce=(key:string,raw:string)=>{
+  if(localStorage.getItem(key)!==null)return;
+  localStorage.setItem(key,raw);
+};
+
+const preserveUnreadable=(raw:string,now:number)=>{
+  const key=`${UNREADABLE_PREFIX}${now}`;
   try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    return raw?normalizeState(JSON.parse(raw)):initialState();
+    localStorage.setItem(key,raw);
+    return key;
   }catch{
-    return initialState();
+    return null;
   }
 };
 
-export const saveState=(state:AppState)=>
+const errorMessage=(error:unknown)=>
+  error instanceof Error?error.message:'Não foi possível interpretar os dados locais.';
+
+export const loadState=(now=Date.now()):StateLoadResult=>{
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(raw===null){
+    persistenceBlocked=false;
+    return {state:initialState(),status:'empty',recovery:null};
+  }
+
+  try{
+    const parsed:unknown=JSON.parse(raw);
+
+    if(isLegacyV8(parsed))preserveOnce(LEGACY_V8_BACKUP_KEY,raw);
+    else if(isLegacyV7(parsed))preserveOnce(LEGACY_V7_BACKUP_KEY,raw);
+
+    const state=normalizeState(parsed);
+    persistenceBlocked=false;
+    return {state,status:'ready',recovery:null};
+  }catch(error){
+    persistenceBlocked=true;
+    return {
+      state:initialState(),
+      status:'recovery',
+      recovery:{
+        raw,
+        recoveryKey:preserveUnreadable(raw,now),
+        reason:errorMessage(error),
+      },
+    };
+  }
+};
+
+export const saveState=(state:AppState)=>{
+  if(persistenceBlocked)return false;
   localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  return true;
+};
+
+export const resumePersistence=()=>{
+  persistenceBlocked=false;
+};
+
+export const clearState=()=>{
+  localStorage.removeItem(STORAGE_KEY);
+  persistenceBlocked=false;
+};
 
 export const isBackupLike=(value:unknown)=>
   isV9State(value)||isLegacyV8(value)||isLegacyV7(value);
