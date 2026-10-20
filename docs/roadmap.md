@@ -100,7 +100,11 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [ ] testar composição manual dos três coletes em quadra;
 - [ ] confirmar persistência/histórico/backup V9 após a terça;
 - [ ] registrar atritos e bugs observados como issues pequenas;
-- [ ] decidir se haverá patch V0.8.1 ou avanço direto para V0.9.0.
+- [ ] validar feedback de uso externo já registrado:
+  - [ ] #37 — fluxo explícito de preparação da terça;
+  - [ ] #38 — encerramento antecipado de partida após pausar;
+- [ ] decidir os patches V0.8.1 somente depois da observação de hoje;
+- [ ] só então decidir o avanço para V0.9.0.
 
 ## P1 — V0.9.0 — empréstimos e goleiros — Issue #10
 
