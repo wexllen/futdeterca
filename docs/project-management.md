@@ -15,8 +15,10 @@ O backlog vivo está em GitHub Issues. Cada marco funcional possui uma issue agr
 | V0.7.1 — nova terça limpa | #17 | Concluído |
 | V0.7.x — consolidação arquitetural | #8 | Concluído |
 | V0.7.2 — classificação da terça | #19 | Concluído |
-| V0.8.0 — jogadores independentes | #9 | Concluído |
-| V0.9.0 — empréstimos e goleiros | #10 | Planejado |
+| V0.7.3 — proteção de persistência | #26 | Concluído |
+| V0.8.0 — jogadores independentes | #9 | Publicado |
+| V0.8.1 — validação em quadra / hardening | #35 | Atual |
+| V0.9.0 — empréstimos e goleiros | #10 | Próximo |
 | V0.10.0 — eventos individuais | #11 | Planejado |
 | V0.11.0 — dashboard e estatísticas | #12 | Planejado |
 | V0.12.0 — sorteio automático | #13 | Planejado |
@@ -77,6 +79,14 @@ Issue: https://github.com/wexllen/futdeterca/issues/9
 
 Introduz identidade persistente de jogador, presença por sessão, composição manual dos coletes, importação local da lista do WhatsApp com prévia/reconciliação e snapshots históricos.
 
+## Etapa atual
+
+### V0.8.1 — validação em quadra e hardening pós-release
+
+Issue: https://github.com/wexllen/futdeterca/issues/35
+
+Objetivo: usar a V0.8.0 publicada numa terça real, observar fricção operacional e corrigir apenas problemas comprovados antes do próximo domínio.
+
 ## Próximo marco funcional
 
 ### V0.9.0 — empréstimos e goleiros
@@ -123,9 +133,11 @@ Campos sugeridos:
 
 ## Política de fechamento
 
-Uma issue agregadora de versão só é fechada quando:
-1. critérios de aceite estão satisfeitos;
+Uma issue agregadora de versão pode ser fechada quando:
+1. critérios de aceite implementáveis estão satisfeitos;
 2. CI está verde;
-3. versão publicada não apresenta regressão conhecida;
+3. a versão foi publicada sem regressão conhecida;
 4. migrações relevantes foram testadas com fixtures reais;
-5. quando aplicável, houve validação em uso real.
+5. a validação em uso real já ocorreu **ou** foi separada explicitamente em uma issue de pós-release quando a próxima oportunidade de uso ainda não aconteceu.
+
+Isso evita manter uma capacidade tecnicamente concluída artificialmente aberta, sem perder a disciplina de validação em quadra. Para a V0.8, a entrega funcional está encerrada na #9 e a validação real vive na #35.

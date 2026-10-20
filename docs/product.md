@@ -104,3 +104,20 @@ O operador pode:
 O produto continua deliberadamente sem sorteio automático nesta versão: o WhatsApp fornece presença; o operador decide a composição.
 
 A composição de uma terça é histórica. Alterações futuras no cadastro do jogador não reescrevem o passado.
+
+
+## Estado pós-release da V0.8
+
+A V0.8.0 está publicada. A próxima etapa do produto não é adicionar domínio novo imediatamente, mas validar o fluxo de presença, importação e composição em uma terça real.
+
+A Issue #35 concentra essa validação. Bugs e atritos observados devem gerar patches pequenos; funcionalidades de empréstimo/rotação permanecem na V0.9 / Issue #10.
+
+A distinção é intencional:
+
+```text
+V0.8.0 publicada
+    ↓
+validação real / hardening
+    ↓
+V0.9 somente depois de evidência de que a base está estável
+```
