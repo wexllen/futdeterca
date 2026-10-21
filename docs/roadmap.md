@@ -103,6 +103,7 @@ Veja também: [Gestão do projeto](./project-management.md).
 - [ ] validar feedback de uso externo já registrado:
   - [ ] #37 — fluxo explícito de preparação da terça;
   - [ ] #38 — encerramento antecipado de partida após pausar;
+  - [ ] #40 — seleção de coletes compacta/discreta no mobile;
 - [ ] decidir os patches V0.8.1 somente depois da observação de hoje;
 - [ ] só então decidir o avanço para V0.9.0.
 
