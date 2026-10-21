@@ -20,6 +20,7 @@ O backlog vivo está em GitHub Issues. Cada marco funcional possui uma issue agr
 | V0.8.1 — validação em quadra / hardening | #35 | Atual |
 | V0.8.1 — fluxo de preparação da terça | #37 | Após validação de hoje |
 | V0.8.1 — encerramento antecipado de partida | #38 | Após validação de hoje |
+| V0.8.1 — seleção de coletes compacta no mobile | #40 | Após validação de hoje |
 | V0.9.0 — empréstimos e goleiros | #10 | Próximo |
 | V0.10.0 — eventos individuais | #11 | Planejado |
 | V0.11.0 — dashboard e estatísticas | #12 | Planejado |
@@ -87,7 +88,7 @@ Introduz identidade persistente de jogador, presença por sessão, composição 
 
 Issue: https://github.com/wexllen/futdeterca/issues/35
 
-Objetivo: usar a V0.8.0 publicada numa terça real, observar fricção operacional e corrigir apenas problemas comprovados antes do próximo domínio. Já existem dois achados de uso externo para validar após a observação de hoje: #37 (preparação explícita antes da Quadra) e #38 (encerramento antecipado após pausar).
+Objetivo: usar a V0.8.0 publicada numa terça real, observar fricção operacional e corrigir apenas problemas comprovados antes do próximo domínio. Já existem três achados de uso externo/quadra para consolidar após a observação de hoje: #37 (preparação explícita antes da Quadra), #38 (encerramento antecipado após pausar) e #40 (seleção de coletes mais compacta no mobile).
 
 ## Próximo marco funcional
 
